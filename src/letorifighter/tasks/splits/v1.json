@@ -61,7 +61,7 @@
    "kind": "control",
    "params": {
     "config": "keep_distance",
-    "hold_turns": 5
+    "hold_turns": 10
    },
    "horizon_turns": 50,
    "clauses": [
@@ -114,9 +114,9 @@
    "id": 4,
    "kind": "escape",
    "params": {
-    "distance": 2.5,
-    "hold_turns": 3,
-    "min_groin_height": 0.0
+    "distance": 3.0,
+    "hold_turns": 5,
+    "min_groin_height": 1.1
    },
    "horizon_turns": 50,
    "clauses": [

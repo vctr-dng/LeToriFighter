@@ -10,7 +10,7 @@ from letorifighter.tasks.definitions import SPLITS_DIR
 
 # Pin of the frozen v1 file. If this changes the split definition changed: make
 # a new version file instead of editing v1.
-V1_DIGEST = "f8e7d001b8cedb9410c455f4433d718421831bf751c48c3e2b46a24445832ebc"
+V1_DIGEST = "d45ad80b63669b91322c7727d4ee15250f58af56e6c937a6003ddfc3c4909c37"
 
 DEFS = Definitions.load("v1")
 

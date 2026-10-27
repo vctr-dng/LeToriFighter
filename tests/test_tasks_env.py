@@ -222,15 +222,18 @@ def test_policy_reset_is_called_with_episode_seed():
     assert len(record["latency_ms"]) == 2
 
 
-def test_escape_task_success_with_distance(tmp_path):
+def test_escape_task_success_with_distance():
     def far(turn, actions):
-        return pair(obs_at_distance(1.3 if turn < 2 else 3.0, match_frame=6.0 * turn))
+        return pair(obs_at_distance(1.3 if turn < 2 else 3.5, match_frame=6.0 * turn))
 
     _fake, env = make_env(far)
     env.reset(
-        options={"episode": spec("escape", opponent="scripted:advance_grab", horizon=8)}
+        options={
+            "episode": spec("escape", opponent="scripted:advance_grab", horizon=10)
+        }
     )
     info = None
-    for _ in range(8):
+    for _ in range(10):
         _, _, _, _, info = env.step(hold(None))
-    assert info["success"] and info["success_turn"] == 4
+    # five turns at 3.5 (turns 2 to 6)
+    assert info["success"] and info["success_turn"] == 6

@@ -8,14 +8,25 @@ held for `hold_turns` consecutive observations. Detectors:
   head or trunk (`geometry.CONTACT_THRESHOLD`) for `hold_turns` (default 2)
   consecutive turns. Two turns, not one, so a single glancing pass does not count.
 * `ControlDetector`: the learner holds a target relative configuration for
-  `hold_turns` (default 5) consecutive turns. Configurations (`CONFIGS`):
-  `keep_close` (groin distance in [0.4, 1.0]), `keep_distance` (groin distance
-  in [1.5, 2.2]), `clinch` (a hand in contact with the other fighter's head or
-  trunk and that same hand's grip closed). The start distance is 1.3, so every
-  configuration but `keep_distance`'s lower edge needs the learner to move.
-* `EscapeDetector`: groin distance at least 2.5 for `hold_turns` (default 3)
-  consecutive turns, and the learner's groin still at least `min_groin_height`
-  above the floor (default 0.0, off). Meant against an opponent that chases.
+  `hold_turns` consecutive turns (default 5). Configurations (`CONFIGS`):
+  `keep_close` (groin distance in [0.4, 1.0] and the learner's groin at least
+  1.1 above the floor, i.e. still standing; 1.49 at the start), `keep_distance`
+  (groin distance in [1.6, 2.0], standing; the split definition holds it for 10
+  turns), `clinch` (a hand in contact with the other fighter's head or trunk and
+  that same hand's grip closed). The start distance is 1.3, so every
+  configuration needs the learner to move.
+* `EscapeDetector`: groin distance at least `distance` for `hold_turns`
+  consecutive turns while the learner's groin stays at least `min_groin_height`
+  above the floor. Defaults 2.5, 3 turns, 0.0 (off); the split definition uses
+  3.0, 5 turns and 1.1 (get away on your feet). Meant against a chaser.
+
+Why the standing and distance requirements: fighters that only hold, or move
+randomly, topple and drift apart (median groin distance of two holding
+fighters 1.9 after 20 turns and 2.5 after 50), so a bare distance condition is
+met by doing nothing. The thresholds were chosen on 120 recorded episodes so
+that the trivial baselines (hold every joint, random actions, and the scripted
+advance_grab and rush fighters used as learners) stay mostly low; the baseline
+success rates of the final definitions are in `docs/m3-tasks-eval.md`.
 * `SequenceDetector`: stages in order; a stage starts counting with the
   observation after the previous stage succeeded.
 """
@@ -78,8 +89,8 @@ class ReachDetector(Detector):
 
 # name -> (kind, parameters)
 CONFIGS = {
-    "keep_close": ("distance", {"low": 0.4, "high": 1.0}),
-    "keep_distance": ("distance", {"low": 1.5, "high": 2.2}),
+    "keep_close": ("distance", {"low": 0.4, "high": 1.0, "min_height": 1.1}),
+    "keep_distance": ("distance", {"low": 1.6, "high": 2.0, "min_height": 1.1}),
     "clinch": ("clinch", {}),
 }
 
@@ -95,7 +106,10 @@ class ControlDetector(Detector):
     def condition(self, obs: dict) -> bool:
         kind, params = CONFIGS[self.config]
         if kind == "distance":
-            return params["low"] <= geometry.groin_distance(obs) <= params["high"]
+            return (
+                params["low"] <= geometry.groin_distance(obs) <= params["high"]
+                and float(obs["self"]["groin_height"][0]) >= params["min_height"]
+            )
         contacts = geometry.hand_contacts(obs)
         grips = obs["self"]["grips"]  # [left, right]
         return (contacts["l_hand"] and grips[0] >= 0.5) or (
