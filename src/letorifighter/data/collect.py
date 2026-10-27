@@ -316,8 +316,55 @@ def make_env(config: CollectConfig, definitions: Definitions, worker_id: int = 0
     }
     if worker_id < len(config.worker_env_kwargs):
         kwargs.update(config.worker_env_kwargs[worker_id])
+    from letorifighter.direct import check_env_kwargs
+
+    check_env_kwargs(kwargs)  # refuses Steam launch and desktop displays
     env = TwoPlayerToriEnv(**kwargs)
     return LeToriTaskEnv(env=env, split="train", definitions=definitions, reward="none")
+
+
+# ---------------------------------------------------------------- direct workers
+def run_pool_workers(
+    n: int,
+    build_command: Callable[[int, dict], list[str]],
+    log: Callable[[str], None] = print,
+) -> list[int]:
+    """Start a ToriLLE `InstancePool(n)` (one game copy and Xvfb each) and n worker processes.
+
+    `build_command(worker_id, instance_kwargs)` gives the argv of worker `worker_id`;
+    `instance_kwargs` is `dict(launch_mode, game_dir, display, capture_display)`. The
+    workers run without `DISPLAY`/`WAYLAND_DISPLAY`. Returns the exit codes. The pool
+    (games, Xvfb, copies) is removed at the end, also on Ctrl-C (the workers started
+    here are terminated first).
+    """
+    import subprocess
+
+    from torille.pool import InstancePool
+
+    from letorifighter.direct import check_env_kwargs
+
+    env = {
+        k: v for k, v in os.environ.items() if k not in ("DISPLAY", "WAYLAND_DISPLAY")
+    }
+    procs: list[subprocess.Popen] = []
+    with InstancePool(n, display="xvfb") as pool:
+        log(f"pool of {len(pool)} instances, {pool.disk_bytes / GB:.2f} GB")
+        try:
+            for worker_id, kwargs in enumerate(pool):
+                check_env_kwargs(kwargs)
+                procs.append(
+                    subprocess.Popen(build_command(worker_id, kwargs), env=env)
+                )
+            return [p.wait() for p in procs]
+        finally:
+            for p in procs:
+                if p.poll() is None:
+                    p.terminate()
+            for p in procs:
+                try:
+                    p.wait(30)
+                except subprocess.TimeoutExpired:
+                    p.kill()
 
 
 # ------------------------------------------------------------------------- loop
@@ -444,4 +491,5 @@ __all__ = [
     "game_lock",
     "make_env",
     "run_collection",
+    "run_pool_workers",
 ]

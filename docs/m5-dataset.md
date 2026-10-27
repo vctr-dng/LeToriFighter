@@ -42,26 +42,25 @@ Output layout (`out_dir`): `config.json`, `shards/w<id>/{episodes.jsonl, segment
 - **Resume**: re-run the same command. Episodes whose seed is in any shard's sidecar are skipped (also when the number of workers changed).
 - **Disk guard**: before every episode the size of `out_dir` is measured; above `max_disk_gb` (default 15; project cap 50 GB for everything) the worker stops with exit code 3 after closing its segment. The merge needs space for a second copy of the videos (shards plus `merged/`); use `merge --delete-shards` once the merged dataset is verified, or budget twice the data size.
 - **Progress log**: one line per episode with cumulative turns/s, episodes/hour and the disk size.
-- **Lock**: in the default Steam-launch mode the script takes `/tmp/toribash-game.lock` itself (`fcntl`, blocking, same as `train_ppo.py`) before launching the game; never wrap it in `flock`. `--no-lock` is for direct-launch workers that own their game instance.
-- **Per-worker env kwargs (for the ToriLLE instance pool, not merged yet)**: `env_kwargs` (all workers) and `worker_env_kwargs` (a list indexed by `--worker-id`) are passed unchanged to `TwoPlayerToriEnv(...)` on top of the defaults `matchframes`, `turnframes`, `capture_size`, `draw_game=True`; `--env-kwargs '{"display": ":11"}'` sets them for one invocation. When `torille.pool` lands, per-instance `game_dir`, `display` and `capture_display` go in there with no code change; until then a second worker can only run in Steam-launch mode and has to wait for the lock.
+- **Launch mode**: default `--launch direct`: every worker has its own game copy on a private Xvfb (ToriLLE `InstancePool`), nothing appears on the desktop, and no global lock is taken. `run` alone creates a pool of 1; `run-pool --workers N` creates `InstancePool(N)`, starts N `run` processes (`--worker-id i --num-workers N`, per-worker `--env-kwargs` with `launch_mode/game_dir/display/capture_display`, `DISPLAY` removed from their environment), waits, and then merges (`--no-merge`, `--delete-shards`, `--force` as for `merge`). Exit code 3 of a worker (disk cap) still merges. `--launch steam` is the old Steam launch on the desktop display: it takes `/tmp/toribash-game.lock` itself (never wrap in `flock`), and the display guard (`letorifighter.direct.check_env_kwargs`, also used by `make_env`) refuses it unless `LETORIFIGHTER_ALLOW_STEAM=1`. The guard also refuses `:0`, the original `$DISPLAY` and a missing display.
+- **Per-worker env kwargs**: `env_kwargs` (all workers) and `worker_env_kwargs` (a list indexed by `--worker-id`) are passed unchanged to `TwoPlayerToriEnv(...)` on top of the defaults `matchframes`, `turnframes`, `capture_size`, `draw_game=True`; `--env-kwargs '{"display": ":11"}'` sets them for one invocation. `run-pool` fills in the pool's `game_dir`, `display` and `capture_display` this way.
 
 ## Commands
 
 ```bash
 uv sync --group vla --group torch --group train   # lerobot, torch (PPO checkpoints), pyyaml
 
-# smoke test: 6 episodes
-uv run --group vla python scripts/collect_dataset.py run --config configs/collect_m5_scripted.yaml \
+# smoke test: 6 episodes (one worker of its own pool of 1)
+env -u DISPLAY -u WAYLAND_DISPLAY uv run --group vla python scripts/collect_dataset.py run --config configs/collect_m5_scripted.yaml \
     --set out_dir=data/m5/smoke --max-episodes 6
 
-# the target run (below); resumable, stops at the disk cap
-uv run --group vla python scripts/collect_dataset.py run --config configs/collect_m5_scripted.yaml
-uv run --group vla --group torch python scripts/collect_dataset.py run --config configs/collect_m5.yaml
+# the target run (below); resumable, stops at the disk cap (single worker: use `run`)
+env -u DISPLAY -u WAYLAND_DISPLAY uv run --group vla --group torch python scripts/collect_dataset.py run --config configs/collect_m5.yaml
 
-# direct-launch workers once torille.pool exists (4 workers, one command each)
-for i in 0 1 2 3; do
-  uv run ... python scripts/collect_dataset.py run --config c.yaml --worker-id $i --num-workers 4 --no-lock &
-done; wait
+# 4 direct-launch workers on Xvfb (pool of 4 copies, about 0.65 GB disk each under
+# ~/.cache/torille/instances, removed at exit), then merge. Steam must be running (IPC only).
+env -u DISPLAY -u WAYLAND_DISPLAY uv run --group vla --group torch python scripts/collect_dataset.py \
+    run-pool --config configs/collect_m5_scripted.yaml --workers 4
 
 uv run --group vla python scripts/collect_dataset.py status --config configs/collect_m5.yaml
 uv run --group vla python scripts/collect_dataset.py merge  --config configs/collect_m5.yaml [--delete-shards]
@@ -90,7 +89,7 @@ Measured once on the real game on `:0`, Steam launch, capture at 224 px with `dr
 
 Opponents follow the train pools (about 60% advance_grab because keep_distance and escape only use chasers, 20% passive, 20% random), poses are K=0 and K=2 train poses.
 
-Native test (`tests/test_collect_native.py`): **pending**. A first run collected real RGB frames and failed only on a too-strict turn-count assertion (since relaxed); a later run was interrupted by the orchestrator because the game window appeared on the user's monitor, so the relaxed test has not completed once. It is to be run on the Xvfb direct-launch mode once ToriLLE provides it (`worker_env_kwargs` plus `--no-lock`).
+Native test (`tests/test_collect_native.py`): **passes** on Xvfb direct launch (`run-pool --workers 1` then merge: two episodes with real RGB frames, non-constant frames and states, card integrity ok).
 
 
 ## Search-based demonstrations (CEM, random shooting): not implemented, and why
@@ -114,7 +113,7 @@ The plan (M5) asks for search-based demonstrations where PPO struggles. This is 
 - No PPO expert checkpoint existed when this was written (`data/ppo/` is empty), so the PPO sources of `configs/collect_m5.yaml` were only tested with an untrained checkpoint on the fake env; the measured run uses scripted and random sources. Re-run with experts once `train_ppo.py` has produced them and compare their success rates in the dataset card.
 - Search-based demonstrations: see above.
 - Cosmos Policy format (256x256 frames plus T5 embeddings, M2) is not written.
-- Direct-launch parallel workers were not run (the instance pool is not merged); only the plumbing exists and is tested on the fake env.
+- A multi-worker `run-pool` (N > 1) has only been run with N=1 in the native test; the throughput of N workers on Xvfb is CPU-bound (software GL, see `docs/m4-ppo.md`), so measure before sizing the target run.
 - Video storage uses LeRobot's default AV1 mp4 at `fps=10`; frames are lossy-compressed. `VLADataset` decodes them with `pyav` (torchcodec cannot load here, harmless).
 - `terminate_on_success` is off, so every episode plays its full horizon even after success (the detector latch is stored per step in `info.success`).
 - The card's Toribash build id is read from the Steam app manifest, and the git states are those of the checkouts that ran `make_dataset_card.py`, not those recorded at collection time. Run the card on the machine and commits that collected.

@@ -1,11 +1,14 @@
 """`uv run python -m letorifighter.eval --split val --episodes 20 --policy random`.
 
-Launches the game: wrap in `flock /tmp/toribash-game.lock`.
+Starts its own game instance on a private Xvfb (ToriLLE `InstancePool(1)`); run it as
+`env -u DISPLAY -u WAYLAND_DISPLAY uv run python -m letorifighter.eval ...`.
 """
 
 import argparse
+import contextlib
 import json
 
+from letorifighter.direct import own_instance
 from letorifighter.eval.harness import evaluate
 from letorifighter.eval.policies import make_policy
 from letorifighter.tasks import LeToriTaskEnv
@@ -24,8 +27,10 @@ def main() -> None:
     parser.add_argument("--out", default=None, help="JSON report path")
     parser.add_argument("--draw", action="store_true", help="draw the game")
     args = parser.parse_args()
-    env = LeToriTaskEnv(split=args.split, draw_game=args.draw)
-    try:
+    with contextlib.ExitStack() as stack:
+        kwargs = stack.enter_context(own_instance())
+        env = LeToriTaskEnv(split=args.split, draw_game=args.draw, env_kwargs=kwargs)
+        stack.callback(env.close)
         report = evaluate(
             make_policy(args.policy),
             env,
@@ -35,8 +40,6 @@ def main() -> None:
             out_path=args.out,
             policy_name=args.policy,
         )
-    finally:
-        env.close()
     print(json.dumps(report["overall"], indent=1))
 
 

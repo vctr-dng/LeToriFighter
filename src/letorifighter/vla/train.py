@@ -19,7 +19,6 @@ With `eval_game_episodes > 0` it also plays the policy in the game through
 from __future__ import annotations
 
 import argparse
-import fcntl
 import json
 import math
 import shutil
@@ -48,8 +47,6 @@ from .model import (
     predict_states,
 )
 from .text import TextEncoder, instruction_task_ids
-
-GAME_LOCK = "/tmp/toribash-game.lock"
 
 
 def resolve_task_ids(root: Path) -> dict[str, int]:
@@ -170,17 +167,17 @@ def save_checkpoint(
 
 
 def run_game_eval(policy, cfg: VLAConfig, stats, step: int) -> dict[str, Any]:
-    """Play `eval_game_episodes` episodes of `eval_split` (serialised with the
-    game lock other agents use)."""
+    """Play `eval_game_episodes` episodes of `eval_split` on a private Xvfb instance."""
     from letorifighter.eval import evaluate
     from letorifighter.tasks import LeToriTaskEnv
 
     from .adapter import VLAPolicy
 
     adapter = VLAPolicy(policy, cfg, stats)
-    with open(GAME_LOCK, "w") as lock:
-        fcntl.flock(lock, fcntl.LOCK_EX)
-        env = LeToriTaskEnv(split=cfg.eval_split)
+    from letorifighter.direct import own_instance
+
+    with own_instance() as kwargs:
+        env = LeToriTaskEnv(split=cfg.eval_split, env_kwargs=kwargs)
         try:
             report = evaluate(
                 adapter,

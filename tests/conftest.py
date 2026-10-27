@@ -1,8 +1,38 @@
 """Shared fixtures. Torch and LeRobot are optional; fixtures import them lazily."""
 
+import json
+import os
+import shutil
 import types
 
 import pytest
+
+
+@pytest.fixture(scope="session")
+def xvfb_instance():
+    """Keyword arguments of one ToriLLE `InstancePool` instance (own game copy, own Xvfb).
+
+    Native tests only: the game runs in direct-launch mode on a private virtual
+    display, never on the desktop. Skips when Xvfb or `torille.pool` is missing.
+    """
+    if shutil.which("Xvfb") is None:
+        pytest.skip("Xvfb is not installed")
+    pool_module = pytest.importorskip("torille.pool")
+    from letorifighter.direct import check_env_kwargs
+
+    with pool_module.InstancePool(1, display="xvfb") as pool:
+        kwargs = next(iter(pool))
+        yield check_env_kwargs(kwargs)
+
+
+@pytest.fixture
+def game_env(xvfb_instance):
+    """Environment for a game subprocess: instance kwargs in `LETORI_ENV_KWARGS`, no desktop display."""
+    env = {
+        k: v for k, v in os.environ.items() if k not in ("DISPLAY", "WAYLAND_DISPLAY")
+    }
+    env["LETORI_ENV_KWARGS"] = json.dumps(xvfb_instance)
+    return env
 
 
 @pytest.fixture

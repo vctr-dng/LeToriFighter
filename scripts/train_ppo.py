@@ -1,10 +1,18 @@
 """Train a PPO expert on the task environment (M4).
 
-Run (the script takes the game lock itself; do NOT wrap it in `flock`, a second
-lock on the same file would deadlock. If you do wrap it, pass `--no-lock`):
+Run (default `launch: direct`: the script starts its own ToriLLE `InstancePool(1)`,
+one game copy on a private Xvfb, so nothing appears on your desktop and several runs
+can go at once; always unset the desktop display variables):
 
-    uv run --group torch --group train python scripts/train_ppo.py \\
-        --config configs/ppo_reach.yaml [--set total_turns=50000 ppo.seed=1]
+    env -u DISPLAY -u WAYLAND_DISPLAY uv run --group torch --group train \\
+        python scripts/train_ppo.py --config configs/ppo_reach.yaml \\
+        [--set total_turns=50000 ppo.seed=1 name=ppo_reach_s1]
+
+An externally managed pool instance: `--game-dir DIR --display :N`. `launch: steam`
+(`--set launch=steam`) starts the game through the Steam client on the desktop
+display; it takes the global game lock (`/tmp/toribash-game.lock`, do not wrap in
+`flock`; with an outer flock pass `--no-lock`) and is refused by the guard unless
+`LETORIFIGHTER_ALLOW_STEAM=1`.
 
 Config: `TrainConfig` below, as YAML; `--set key=value` overrides (YAML values,
 `ppo.` prefix for `PPOConfig` fields). Only the `train` split is used for
@@ -17,6 +25,8 @@ import argparse
 import fcntl
 import math
 import os
+import signal
+import sys
 import time
 from dataclasses import asdict, dataclass, field, fields, replace
 from pathlib import Path
@@ -36,7 +46,8 @@ class TrainConfig:
     definitions: str = "v2"
     total_turns: int = 200_000
     turnframes: int = 5  # fixed by the definitions file; checked
-    draw_game: bool = False
+    draw_game: bool = False  # PPO needs no capture
+    launch: str = "direct"  # "direct": own InstancePool(1) on Xvfb; "steam": desktop
     seed: int = 0
     reward: str = "success"  # sparse success reward (detector based)
     shaping_scale: float = 0.0  # >0 adds potential-based shaping to the training reward
@@ -93,12 +104,40 @@ def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument("--config")
     parser.add_argument("--set", nargs="*", default=[], dest="overrides")
-    parser.add_argument("--no-lock", action="store_true")
+    parser.add_argument("--no-lock", action="store_true", help="steam mode only")
+    parser.add_argument("--game-dir", help="direct mode: instance of an external pool")
+    parser.add_argument("--display", help="direct mode: its Xvfb display, e.g. :101")
     args = parser.parse_args(argv)
     cfg = load_config(args.config, args.overrides)
+    if cfg.launch not in ("direct", "steam"):
+        raise SystemExit("launch must be 'direct' or 'steam'")
+    if bool(args.game_dir) != bool(args.display):
+        raise SystemExit("--game-dir and --display go together")
 
-    if not args.no_lock:
-        acquire_game_lock()
+    # SIGTERM must unwind (finally: close the game and the pool) instead of killing us
+    signal.signal(signal.SIGTERM, lambda *_: sys.exit(143))
+    pool = None
+    env_kwargs: dict = {}
+    if cfg.launch == "steam":
+        if not args.no_lock:
+            acquire_game_lock()
+    elif args.game_dir:
+        env_kwargs = {
+            "launch_mode": "direct",
+            "game_dir": args.game_dir,
+            "display": args.display,
+            "capture_display": args.display,
+        }
+    else:
+        from torille.pool import InstancePool
+
+        pool = InstancePool(1, display="xvfb").start()
+        env_kwargs = next(iter(pool))
+        print(f"instance: {env_kwargs}", flush=True)
+    if cfg.launch == "direct":
+        from letorifighter.direct import check_env_kwargs
+
+        check_env_kwargs(env_kwargs)
 
     from letorifighter.eval import evaluate
     from letorifighter.ppo import (
@@ -124,6 +163,7 @@ def main(argv: list[str] | None = None) -> None:
         definitions=definitions,
         reward=cfg.reward,
         draw_game=cfg.draw_game,
+        env_kwargs=env_kwargs,
     )
     env = TaskMixWrapper(base, cfg.tasks, cfg.opponents)
     if cfg.shaping_scale > 0:
@@ -243,6 +283,8 @@ def main(argv: list[str] | None = None) -> None:
         if mlflow is not None:
             mlflow.end_run()
         base.close()
+        if pool is not None:
+            pool.close()  # removes the game copy and the Xvfb
 
 
 if __name__ == "__main__":

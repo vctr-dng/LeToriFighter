@@ -4,7 +4,7 @@ Code: `src/letorifighter/ppo/` (PyTorch, from scratch), `scripts/train_ppo.py`, 
 
 ## Implementation
 
-- Policy: observation of the learner (`flatten_observation`, 272 values) normalised by a running mean/std, concatenated with a learned `task_id` embedding (16-d), two tanh MLPs (256, 256) for actor and critic. The actor outputs 22 x 4 logits: a factored categorical (log-prob and entropy sum over the 22 heads; the entropy bonus uses the mean per head). The text instruction is not used (task-id conditioning).
+- Policy: observation of the learner (`flatten_observation`, 300 values (`OBS_DIM`)) normalised by a running mean/std, concatenated with a learned `task_id` embedding (16-d), two tanh MLPs (256, 256) for actor and critic. The actor outputs 22 x 4 logits: a factored categorical (log-prob and entropy sum over the 22 heads; the entropy bonus uses the mean per head). The text instruction is not used (task-id conditioning).
 - PPO: GAE (gamma 0.99, lambda 0.95), clipped objective (0.2), per-minibatch advantage normalisation, value loss, entropy bonus 0.01, grad clip 0.5, linear LR decay, KL early stop. Single env, rollout of 1024 turns, 10 epochs, minibatch 256. Truncated episodes (the horizon) bootstrap from the value of the final observation; terminated ones do not. The normaliser is refreshed after each update, not during it.
 - Eval: `agent.policy()` is a callable `policy(obs) -> action` (argmax per head, `deterministic=False` samples), with `reset(seed)`, so `letorifighter.eval.evaluate` takes it directly.
 - Checkpoints: `PPOAgent.save/load` (model, optimiser, normaliser, RNG state, counters, config; about 2.5 MB). Writes are atomic.
@@ -14,11 +14,19 @@ Code: `src/letorifighter/ppo/` (PyTorch, from scratch), `scripts/train_ppo.py`, 
 ## Training script
 
 ```
-# One command; the script takes the game lock itself (do not add `flock` around it, a second
-# lock on the same file deadlocks; with an outer flock pass `--no-lock`).
-uv run --group torch --group train python scripts/train_ppo.py --config configs/ppo_reach.yaml
-uv run --group torch --group train python scripts/train_ppo.py --config configs/ppo_reach.yaml --set total_turns=100000 ppo.seed=1 name=ppo_reach_s1
+# Default `launch: direct`: the script starts its own ToriLLE InstancePool(1) (a copy of the game
+# plus a private Xvfb), so no window appears on the desktop and no global game lock is needed.
+# Always unset the desktop display variables. The Steam client must be running (IPC only).
+env -u DISPLAY -u WAYLAND_DISPLAY uv run --group torch --group train python scripts/train_ppo.py --config configs/ppo_reach.yaml
+env -u DISPLAY -u WAYLAND_DISPLAY uv run --group torch --group train python scripts/train_ppo.py --config configs/ppo_reach.yaml --set total_turns=100000 ppo.seed=1 name=ppo_reach_s1
 ```
+
+Direct mode (Xvfb) details:
+
+- Every run makes its own pool instance (`~/.cache/torille/instances/pool-*/instance-0`, about 0.65 GB of disk, plus roughly 1.6 GB of RAM for the game) and removes it at exit (also on SIGTERM and Ctrl-C). Training and the val evaluation share that instance. Several runs (different `name`, tasks, seeds) can run at the same time; each has its own checkpoint dir `data/ppo/<name>`. Do not start two runs with the same `name`.
+- `--game-dir DIR --display :N` uses an instance of an externally managed pool instead (`InstancePool(n)` in your own script); the script then does not create or remove anything.
+- A hard guard (`letorifighter.direct.check_env_kwargs`) refuses to start a game on `:0`, on the `$DISPLAY` the process started with, without an explicit display, or in Steam-launch mode. `--set launch=steam` is the old Steam launch on the desktop display (it takes `/tmp/toribash-game.lock`, `--no-lock` if you wrap it in `flock`); the guard refuses it unless `LETORIFIGHTER_ALLOW_STEAM=1`.
+- `draw_game: false` (default) works on Xvfb. Measured on the busy shared machine: about 3 turns/s per run (not faster than `draw_game=true`, 3.0 vs 2.9 turns/s) because the game renders with software GL and still uses about 5 cores; three concurrent runs got 1.6 to 1.7 turns/s each (about 5 in total, load average 24). Scaling to concurrent runs is therefore CPU-bound; plan wall time with about 1.5 to 3 turns/s per run, not the 16 to 20 turns/s of the earlier Steam-launch runs on `:0`.
 
 Config keys: `name`, `tasks`, `opponents` (null = the train pool of each task), `eval_opponents`, `definitions` (default `v2`), `total_turns`, `turnframes` (must equal the definitions' 5), `draw_game`, `seed`, `reward`, `shaping_scale`, `eval_every_turns`, `eval_episodes`, `final_eval_episodes`, `checkpoint_every_updates`, `out_dir` (`data/ppo`), `mlflow_uri` (`data/mlruns`, empty disables), `resume`, `ppo` (any `PPOConfig` field). Outputs: `data/ppo/<name>/{latest.pt,best.pt,best.json,config.yaml,eval/val_*.json}` (`data/` is gitignored; a run uses well under 100 MB). `best.pt` is the checkpoint with the best val success rate. Validation uses the `val` split restricted to the training tasks and opponents, on the same game instance as training (`evaluate(..., specs=...)`). Re-running the same command resumes from `latest.pt` (also the MLflow run). MLflow 3 file store (`MLFLOW_ALLOW_FILE_STORE` is set by the script): `mlflow ui --backend-store-uri data/mlruns`; logged: config params, `train/*` per update, `val/*` per evaluation.
 
@@ -45,7 +53,7 @@ Report the number for the final `best.pt` on `val` with 100 episodes plus the th
 
 ## Recommended full runs
 
-Throughput at 15 to 20 turns/s means 100k turns is about 1.5 to 2 hours (`draw_game=False`), 300k about 4.5 to 5.5 hours (including periodic evaluation at 20k turns: 20 episodes x 40 to 50 turns is about 1 minute each). Run them one at a time (single game instance), after the capture and parallelism work, and not while others use the game.
+Throughput at 15 to 20 turns/s (Steam launch on `:0`; on Xvfb measured 1.6 to 3 turns/s, see above) means 100k turns is about 1.5 to 2 hours (`draw_game=False`), 300k about 4.5 to 5.5 hours (including periodic evaluation at 20k turns: 20 episodes x 40 to 50 turns is about 1 minute each). With direct mode they can run concurrently (each its own Xvfb instance), but see the CPU-bound throughput above: with N runs the per-run rate drops, so 2 to 3 at once is reasonable on this machine. The wall times in the table assume the earlier 16 to 20 turns/s and are optimistic for Xvfb.
 
 | Run | Command (after `uv run --group torch --group train python scripts/train_ppo.py`) | Turns | Wall time |
 |---|---|---|---|
@@ -71,7 +79,7 @@ Shaping is potential-based so it does not change the optimal policy, and success
 
 ## Limitations
 
-- One game instance, one environment: PPO sees highly correlated data and 5k to 20k policy updates is slow; expect Reach to need several hundred thousand turns.
+- One game instance per run, one environment: PPO sees highly correlated data and 5k to 20k policy updates is slow; expect Reach to need several hundred thousand turns.
 - The `val` evaluation uses the same game, so it pauses training for about a minute each time.
 - The reset fast-forward cost (`LeToriTaskEnv`) is included in the measured turns/s only in the sense that every episode plays to its horizon.
 - Python 3.14 plus PyTorch: the torch group is not in the default set; install with `uv sync --group torch --group train` (several GB for the CUDA wheels). The agent runs on CPU by default (`ppo.device=cpu`, 2 threads): the network is tiny and the game dominates.

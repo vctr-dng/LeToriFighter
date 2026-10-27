@@ -1,12 +1,14 @@
 """Collect two short episodes with real RGB from the game. Run with `pytest -m native`.
 
-The script takes the game lock itself (`/tmp/toribash-game.lock`, as `train_ppo.py` does),
-so do NOT wrap pytest in `flock`. Needs ToriLLE with `capture_size`, a display and
-`--group vla` (LeRobot writer).
+Runs `collect_dataset.py run-pool --workers 1`: a ToriLLE `InstancePool(1)` (game copy
+plus Xvfb), direct launch, no `DISPLAY`, no game lock; then the merge. Needs ToriLLE
+with `capture_size`, Xvfb and `--group vla` (LeRobot writer).
 """
 
 import inspect
 import json
+import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -25,8 +27,12 @@ TURNS = 6
 
 
 def run_script(*args):
+    env = {
+        k: v for k, v in os.environ.items() if k not in ("DISPLAY", "WAYLAND_DISPLAY")
+    }
     return subprocess.run(
         [sys.executable, str(SCRIPT), *args],
+        env=env,
         capture_output=True,
         text=True,
         timeout=900,
@@ -36,6 +42,9 @@ def run_script(*args):
 
 def test_two_short_episodes_with_real_rgb(tmp_path):
     from torille.envs import TwoPlayerToriEnv
+
+    if shutil.which("Xvfb") is None:
+        pytest.skip("Xvfb is not installed")
 
     if "capture_size" not in inspect.signature(TwoPlayerToriEnv.__init__).parameters:
         pytest.skip("this ToriLLE has no RGB capture")
@@ -61,11 +70,10 @@ def test_two_short_episodes_with_real_rgb(tmp_path):
     }
     path = tmp_path / "config.json"
     path.write_text(json.dumps(config))
-    result = run_script("run", "--config", str(path))
+    result = run_script("run-pool", "--workers", "1", "--config", str(path))
     assert result.returncode == 0, result.stdout[-2000:] + result.stderr[-2000:]
-    assert "game lock acquired" in result.stdout
-    merged = run_script("merge", "--config", str(path))
-    assert merged.returncode == 0, merged.stdout[-2000:] + merged.stderr[-2000:]
+    assert "game lock" not in result.stdout  # direct launch: no global lock
+    assert "worker exit codes: [0]" in result.stdout
 
     records = read_jsonl(out / "merged" / "episodes.jsonl")
     assert len(records) == 2

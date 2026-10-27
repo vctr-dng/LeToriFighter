@@ -1,11 +1,12 @@
 """Trivial-baseline success rates on the task splits (documented in docs/m3-tasks-eval.md).
 
-Run: flock /tmp/toribash-game.lock uv run python scripts/m3_baselines.py
+Run: env -u DISPLAY -u WAYLAND_DISPLAY uv run python scripts/m3_baselines.py (own Xvfb instance)
 """
 
 import json
 from pathlib import Path
 
+from letorifighter.direct import own_instance
 from letorifighter.eval import evaluate, make_policy
 from letorifighter.tasks import LeToriTaskEnv
 
@@ -24,7 +25,13 @@ RUNS = [
 
 def main() -> None:
     results = []
-    env = LeToriTaskEnv(split="val")
+    with own_instance() as kwargs:
+        env = LeToriTaskEnv(split="val", env_kwargs=kwargs)
+        _run(env, results)
+    OUT.write_text(json.dumps(results, indent=1) + "\n")
+
+
+def _run(env, results) -> None:
     try:
         for split, policy, episodes in RUNS:
             report = evaluate(
@@ -41,7 +48,6 @@ def main() -> None:
             )
     finally:
         env.close()
-    OUT.write_text(json.dumps(results, indent=1) + "\n")
 
 
 if __name__ == "__main__":
