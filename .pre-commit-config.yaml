@@ -1,0 +1,32 @@
+exclude: ^(\.agents|\.claude)/skills/
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-executables-have-shebangs
+      - id: check-merge-conflict
+      - id: check-shebang-scripts-are-executable
+      - id: check-symlinks
+      - id: check-toml
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.13.5
+    hooks:
+      - id: uv-lock
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.3
+    hooks:
+      - id: ruff-check
+        args: [ --fix ]
+      - id: ruff-format
+  - repo: https://github.com/facebook/pyrefly-pre-commit
+    rev: 1.4.0
+    hooks:
+      - id: pyrefly-check
+        name: Pyrefly (type checking)
+        args: [src, scripts]
+        pass_filenames: false
+        language: system

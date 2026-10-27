@@ -1,0 +1,54 @@
+[
+  {
+    "draw_game": true,
+    "turnframes": 1,
+    "matchframes": 1000,
+    "launch_s": 6.66589074500007,
+    "elapsed_s": 30.03273387900117,
+    "turns": 534,
+    "episodes": 1,
+    "turns_per_s": 17.780599067385328,
+    "frames_per_s": 17.780599067385328,
+    "mean_reset_s": 0.18375428800209193,
+    "display": ":0"
+  },
+  {
+    "draw_game": true,
+    "turnframes": 5,
+    "matchframes": 1000,
+    "launch_s": 5.9750766689976444,
+    "elapsed_s": 30.006406903001334,
+    "turns": 258,
+    "episodes": 1,
+    "turns_per_s": 8.598163746629526,
+    "frames_per_s": 42.99081873314763,
+    "mean_reset_s": 0.10204994200103101,
+    "display": ":0"
+  },
+  {
+    "draw_game": false,
+    "turnframes": 1,
+    "matchframes": 1000,
+    "launch_s": 5.432455408998067,
+    "elapsed_s": 30.00854118999996,
+    "turns": 1057,
+    "episodes": 2,
+    "turns_per_s": 35.2233050353089,
+    "frames_per_s": 35.2233050353089,
+    "mean_reset_s": 0.2665210979994299,
+    "display": ":0"
+  },
+  {
+    "draw_game": false,
+    "turnframes": 5,
+    "matchframes": 1000,
+    "launch_s": 5.997695806996489,
+    "elapsed_s": 30.015384401998745,
+    "turns": 510,
+    "episodes": 3,
+    "turns_per_s": 16.99128664052821,
+    "frames_per_s": 84.95643320264104,
+    "mean_reset_s": 0.15426576300160377,
+    "display": ":0"
+  }
+]
