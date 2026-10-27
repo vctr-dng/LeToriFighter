@@ -1,0 +1,1944 @@
+[
+ {
+  "schema": 1,
+  "split": "val",
+  "definitions_version": "2.0.0",
+  "definitions_digest": "8063693eb0d51041c647967816bef343e85a31e1de468b4006699ddadfde43a3",
+  "n_episodes": 50,
+  "seed": 0,
+  "policy": "hold",
+  "turnframes": 5,
+  "wall_seconds": 121.74415831399892,
+  "overall": {
+   "episodes": 50,
+   "success_rate": 0.02,
+   "success_ci95": [
+    0.0035391680889764604,
+    0.10495686471836953
+   ],
+   "success_rate_nontrivial": 0.020833333333333332,
+   "trivial_start_rate": 0.040000000000000036,
+   "win_rate": 0.3,
+   "tie_rate": 0.32,
+   "injury_delta_mean": -14189.807835083007,
+   "mean_success_turn": 13.0,
+   "latency_ms": {
+    "mean": 0.016254857077910856,
+    "p50": 0.01455899837310426,
+    "p95": 0.025010301396832794,
+    "max": 0.2242619993921835,
+    "turns": 2400
+   }
+  },
+  "by_task": {
+   "control_clinch": {
+    "episodes": 10,
+    "success_rate": 0.0,
+    "success_ci95": [
+     0.0,
+     0.2775401687666166
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.2,
+    "tie_rate": 0.5,
+    "injury_delta_mean": -14342.664111328118,
+    "mean_success_turn": null,
+    "latency_ms": {
+     "mean": 0.016373416015994735,
+     "p50": 0.014067498341319151,
+     "p95": 0.026052049724967205,
+     "max": 0.13359999866224825,
+     "turns": 500
+    }
+   },
+   "control_keep_close": {
+    "episodes": 10,
+    "success_rate": 0.1,
+    "success_ci95": [
+     0.01787574951572113,
+     0.4041563854975721
+    ],
+    "success_rate_nontrivial": 0.1111111111111111,
+    "trivial_start_rate": 0.09999999999999998,
+    "win_rate": 0.7,
+    "tie_rate": 0.2,
+    "injury_delta_mean": 1130.6632934570302,
+    "mean_success_turn": 13.0,
+    "latency_ms": {
+     "mean": 0.016006847930839285,
+     "p50": 0.014957999155740254,
+     "p95": 0.023767700622556728,
+     "max": 0.04162299956078641,
+     "turns": 500
+    }
+   },
+   "control_keep_distance": {
+    "episodes": 10,
+    "success_rate": 0.0,
+    "success_ci95": [
+     0.0,
+     0.2775401687666166
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.09999999999999998,
+    "win_rate": 0.1,
+    "tie_rate": 0.2,
+    "injury_delta_mean": -37239.59189147949,
+    "mean_success_turn": null,
+    "latency_ms": {
+     "mean": 0.015790810095495544,
+     "p50": 0.014437500794883817,
+     "p95": 0.02242580158053897,
+     "max": 0.1520100013294723,
+     "turns": 500
+    }
+   },
+   "escape": {
+    "episodes": 10,
+    "success_rate": 0.0,
+    "success_ci95": [
+     0.0,
+     0.2775401687666166
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.2,
+    "tie_rate": 0.3,
+    "injury_delta_mean": -21298.108941650393,
+    "mean_success_turn": null,
+    "latency_ms": {
+     "mean": 0.01601639198634075,
+     "p50": 0.014333500075736083,
+     "p95": 0.023581950881634818,
+     "max": 0.14729000031366013,
+     "turns": 500
+    }
+   },
+   "reach": {
+    "episodes": 10,
+    "success_rate": 0.0,
+    "success_ci95": [
+     0.0,
+     0.2775401687666166
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.3,
+    "tie_rate": 0.4,
+    "injury_delta_mean": 800.6624755859409,
+    "mean_success_turn": null,
+    "latency_ms": {
+     "mean": 0.017294809931627242,
+     "p50": 0.014870500308461487,
+     "p95": 0.02633965068525866,
+     "max": 0.2242619993921835,
+     "turns": 400
+    }
+   }
+  },
+  "by_opponent": {
+   "passive": {
+    "episodes": 12,
+    "success_rate": 0.0,
+    "success_ci95": [
+     0.0,
+     0.2425007574992425
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.08333333333333333,
+    "tie_rate": 0.8333333333333334,
+    "injury_delta_mean": 30.436777750650833,
+    "mean_success_turn": null,
+    "latency_ms": {
+     "mean": 0.016651440772100748,
+     "p50": 0.01478749982197769,
+     "p95": 0.02673160015547182,
+     "max": 0.13359999866224825,
+     "turns": 540
+    }
+   },
+   "random": {
+    "episodes": 13,
+    "success_rate": 0.0,
+    "success_ci95": [
+     0.0,
+     0.22810184305529166
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.07692307692307687,
+    "win_rate": 0.7692307692307693,
+    "tie_rate": 0.0,
+    "injury_delta_mean": 6023.773456280055,
+    "mean_success_turn": null,
+    "latency_ms": {
+     "mean": 0.017078290229912984,
+     "p50": 0.015091500245034695,
+     "p95": 0.026232850905216754,
+     "max": 0.2242619993921835,
+     "turns": 620
+    }
+   },
+   "scripted:advance_grab": {
+    "episodes": 25,
+    "success_rate": 0.04,
+    "success_ci95": [
+     0.007096050386699165,
+     0.19544472405022525
+    ],
+    "success_rate_nontrivial": 0.041666666666666664,
+    "trivial_start_rate": 0.040000000000000036,
+    "win_rate": 0.16,
+    "tie_rate": 0.24,
+    "injury_delta_mean": -31526.587520751953,
+    "mean_success_turn": 13.0,
+    "latency_ms": {
+     "mean": 0.01567043469960129,
+     "p50": 0.01410049844707828,
+     "p95": 0.02320014846191043,
+     "max": 0.1520100013294723,
+     "turns": 1240
+    }
+   }
+  },
+  "by_pose": {
+   "preroll0": {
+    "episodes": 23,
+    "success_rate": 0.043478260869565216,
+    "success_ci95": [
+     0.0077164669621267445,
+     0.20991586494059142
+    ],
+    "success_rate_nontrivial": 0.043478260869565216,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.21739130434782608,
+    "tie_rate": 0.21739130434782608,
+    "injury_delta_mean": -33300.48994777514,
+    "mean_success_turn": 13.0,
+    "latency_ms": {
+     "mean": 0.015513463071542204,
+     "p50": 0.01371500184177421,
+     "p95": 0.02501340040907962,
+     "max": 0.1520100013294723,
+     "turns": 1110
+    }
+   },
+   "preroll2": {
+    "episodes": 27,
+    "success_rate": 0.0,
+    "success_ci95": [
+     6.938893903907228e-18,
+     0.12455903714463581
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.07407407407407407,
+    "win_rate": 0.37037037037037035,
+    "tie_rate": 0.4074074074074074,
+    "injury_delta_mean": 2089.662112765847,
+    "mean_success_turn": null,
+    "latency_ms": {
+     "mean": 0.016892800757809464,
+     "p50": 0.01522350066807121,
+     "p95": 0.024984700576169413,
+     "max": 0.2242619993921835,
+     "turns": 1290
+    }
+   }
+  }
+ },
+ {
+  "schema": 1,
+  "split": "val",
+  "definitions_version": "2.0.0",
+  "definitions_digest": "8063693eb0d51041c647967816bef343e85a31e1de468b4006699ddadfde43a3",
+  "n_episodes": 50,
+  "seed": 0,
+  "policy": "random",
+  "turnframes": 5,
+  "wall_seconds": 161.51220480100164,
+  "overall": {
+   "episodes": 50,
+   "success_rate": 0.16,
+   "success_ci95": [
+    0.08337321362087696,
+    0.2851448096176598
+   ],
+   "success_rate_nontrivial": 0.14583333333333334,
+   "trivial_start_rate": 0.040000000000000036,
+   "win_rate": 0.28,
+   "tie_rate": 0.06,
+   "injury_delta_mean": -3660.9864651489224,
+   "mean_success_turn": 20.25,
+   "latency_ms": {
+    "mean": 0.06607123627418332,
+    "p50": 0.06442799895012286,
+    "p95": 0.08125009862851582,
+    "max": 1.2285419979889411,
+    "turns": 2400
+   }
+  },
+  "by_task": {
+   "control_clinch": {
+    "episodes": 10,
+    "success_rate": 0.1,
+    "success_ci95": [
+     0.01787574951572113,
+     0.4041563854975721
+    ],
+    "success_rate_nontrivial": 0.1,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.4,
+    "tie_rate": 0.2,
+    "injury_delta_mean": 2870.0238174438396,
+    "mean_success_turn": 20.0,
+    "latency_ms": {
+     "mean": 0.06692189607565524,
+     "p50": 0.06507800026156474,
+     "p95": 0.08166594907379475,
+     "max": 0.4528199970081914,
+     "turns": 500
+    }
+   },
+   "control_keep_close": {
+    "episodes": 10,
+    "success_rate": 0.1,
+    "success_ci95": [
+     0.01787574951572113,
+     0.4041563854975721
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.09999999999999998,
+    "win_rate": 0.3,
+    "tie_rate": 0.1,
+    "injury_delta_mean": -378.3437011718299,
+    "mean_success_turn": 5.0,
+    "latency_ms": {
+     "mean": 0.0683561279438436,
+     "p50": 0.06510549974336755,
+     "p95": 0.08024519884202162,
+     "max": 1.2285419979889411,
+     "turns": 500
+    }
+   },
+   "control_keep_distance": {
+    "episodes": 10,
+    "success_rate": 0.2,
+    "success_ci95": [
+     0.056680947980693314,
+     0.5098431532792765
+    ],
+    "success_rate_nontrivial": 0.2222222222222222,
+    "trivial_start_rate": 0.09999999999999998,
+    "win_rate": 0.3,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -9376.671801757828,
+    "mean_success_turn": 16.5,
+    "latency_ms": {
+     "mean": 0.06514625209092628,
+     "p50": 0.06294750164670404,
+     "p95": 0.0822837999294279,
+     "max": 0.4967280001437757,
+     "turns": 500
+    }
+   },
+   "escape": {
+    "episodes": 10,
+    "success_rate": 0.2,
+    "success_ci95": [
+     0.056680947980693314,
+     0.5098431532792765
+    ],
+    "success_rate_nontrivial": 0.2,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.1,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -8338.713796997017,
+    "mean_success_turn": 39.0,
+    "latency_ms": {
+     "mean": 0.06360690594738116,
+     "p50": 0.06314349957392551,
+     "p95": 0.07758685042063006,
+     "max": 0.28294199728406966,
+     "turns": 500
+    }
+   },
+   "reach": {
+    "episodes": 10,
+    "success_rate": 0.2,
+    "success_ci95": [
+     0.056680947980693314,
+     0.5098431532792765
+    ],
+    "success_rate_nontrivial": 0.2,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.3,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -3081.2268432617802,
+    "mean_success_turn": 13.0,
+    "latency_ms": {
+     "mean": 0.06638844007284206,
+     "p50": 0.06629999916185625,
+     "p95": 0.08265645119536202,
+     "max": 0.1517730015621055,
+     "turns": 400
+    }
+   }
+  },
+  "by_opponent": {
+   "passive": {
+    "episodes": 12,
+    "success_rate": 0.08333333333333333,
+    "success_ci95": [
+     0.014864709450773478,
+     0.35388592179859524
+    ],
+    "success_rate_nontrivial": 0.08333333333333333,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.25,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -2278.6020088196,
+    "mean_success_turn": 23.0,
+    "latency_ms": {
+     "mean": 0.06954921484942099,
+     "p50": 0.06603200017707422,
+     "p95": 0.08393730167881586,
+     "max": 1.2285419979889411,
+     "turns": 540
+    }
+   },
+   "random": {
+    "episodes": 13,
+    "success_rate": 0.15384615384615385,
+    "success_ci95": [
+     0.04325726318273798,
+     0.4223517050863101
+    ],
+    "success_rate_nontrivial": 0.08333333333333333,
+    "trivial_start_rate": 0.07692307692307687,
+    "win_rate": 0.38461538461538464,
+    "tie_rate": 0.23076923076923078,
+    "injury_delta_mean": -394.4925631009229,
+    "mean_success_turn": 4.0,
+    "latency_ms": {
+     "mean": 0.06755196129468517,
+     "p50": 0.06603350084333215,
+     "p95": 0.08139394831232494,
+     "max": 0.4528199970081914,
+     "turns": 620
+    }
+   },
+   "scripted:advance_grab": {
+    "episodes": 25,
+    "success_rate": 0.2,
+    "success_ci95": [
+     0.08860454100652487,
+     0.3913133553653824
+    ],
+    "success_rate_nontrivial": 0.20833333333333334,
+    "trivial_start_rate": 0.040000000000000036,
+    "win_rate": 0.24,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -6023.107833251957,
+    "mean_success_turn": 26.2,
+    "latency_ms": {
+     "mean": 0.06381627019084501,
+     "p50": 0.062201001128414646,
+     "p95": 0.07978500016179169,
+     "max": 0.4967280001437757,
+     "turns": 1240
+    }
+   }
+  },
+  "by_pose": {
+   "preroll0": {
+    "episodes": 23,
+    "success_rate": 0.13043478260869565,
+    "success_ci95": [
+     0.04537576514344702,
+     0.32127897973018194
+    ],
+    "success_rate_nontrivial": 0.13043478260869565,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.2608695652173913,
+    "tie_rate": 0.13043478260869565,
+    "injury_delta_mean": -5091.197063280172,
+    "mean_success_turn": 17.666666666666668,
+    "latency_ms": {
+     "mean": 0.06625646128996196,
+     "p50": 0.06368450158333872,
+     "p95": 0.08140344889397966,
+     "max": 1.2285419979889411,
+     "turns": 1110
+    }
+   },
+   "preroll2": {
+    "episodes": 27,
+    "success_rate": 0.18518518518518517,
+    "success_ci95": [
+     0.0818058657428532,
+     0.36699056505191746
+    ],
+    "success_rate_nontrivial": 0.16,
+    "trivial_start_rate": 0.07407407407407407,
+    "win_rate": 0.2962962962962963,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -2442.6589185926737,
+    "mean_success_turn": 21.8,
+    "latency_ms": {
+     "mean": 0.06591185660944357,
+     "p50": 0.06496549940493423,
+     "p95": 0.08115934979286976,
+     "max": 0.4967280001437757,
+     "turns": 1290
+    }
+   }
+  }
+ },
+ {
+  "schema": 1,
+  "split": "val",
+  "definitions_version": "2.0.0",
+  "definitions_digest": "8063693eb0d51041c647967816bef343e85a31e1de468b4006699ddadfde43a3",
+  "n_episodes": 50,
+  "seed": 0,
+  "policy": "scripted:advance_grab",
+  "turnframes": 5,
+  "wall_seconds": 125.01202660799754,
+  "overall": {
+   "episodes": 50,
+   "success_rate": 0.28,
+   "success_ci95": [
+    0.17474014357680362,
+    0.4166538714598967
+   ],
+   "success_rate_nontrivial": 0.2916666666666667,
+   "trivial_start_rate": 0.040000000000000036,
+   "win_rate": 0.42,
+   "tie_rate": 0.42,
+   "injury_delta_mean": 10549.470138549797,
+   "mean_success_turn": 9.714285714285714,
+   "latency_ms": {
+    "mean": 0.08250359830526577,
+    "p50": 0.07431000085489359,
+    "p95": 0.13060440123808792,
+    "max": 0.3187379988958128,
+    "turns": 2400
+   }
+  },
+  "by_task": {
+   "control_clinch": {
+    "episodes": 10,
+    "success_rate": 0.3,
+    "success_ci95": [
+     0.10778928748621183,
+     0.6032267800204347
+    ],
+    "success_rate_nontrivial": 0.3,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.4,
+    "tie_rate": 0.5,
+    "injury_delta_mean": 9319.78017578124,
+    "mean_success_turn": 8.333333333333334,
+    "latency_ms": {
+     "mean": 0.08089840593311237,
+     "p50": 0.07501149957533926,
+     "p95": 0.1252629490409162,
+     "max": 0.21015500169596635,
+     "turns": 500
+    }
+   },
+   "control_keep_close": {
+    "episodes": 10,
+    "success_rate": 0.2,
+    "success_ci95": [
+     0.056680947980693314,
+     0.5098431532792765
+    ],
+    "success_rate_nontrivial": 0.2222222222222222,
+    "trivial_start_rate": 0.09999999999999998,
+    "win_rate": 0.7,
+    "tie_rate": 0.1,
+    "injury_delta_mean": 19787.152276611283,
+    "mean_success_turn": 15.0,
+    "latency_ms": {
+     "mean": 0.08504118799464777,
+     "p50": 0.07636099871888291,
+     "p95": 0.13292720213939896,
+     "max": 0.27032300204155035,
+     "turns": 500
+    }
+   },
+   "control_keep_distance": {
+    "episodes": 10,
+    "success_rate": 0.5,
+    "success_ci95": [
+     0.23658959361548731,
+     0.7634104063845126
+    ],
+    "success_rate_nontrivial": 0.5555555555555556,
+    "trivial_start_rate": 0.09999999999999998,
+    "win_rate": 0.2,
+    "tie_rate": 0.7,
+    "injury_delta_mean": 358.4307281494169,
+    "mean_success_turn": 13.0,
+    "latency_ms": {
+     "mean": 0.08255586005543591,
+     "p50": 0.07360299969150219,
+     "p95": 0.12830739942728528,
+     "max": 0.3187379988958128,
+     "turns": 500
+    }
+   },
+   "escape": {
+    "episodes": 10,
+    "success_rate": 0.0,
+    "success_ci95": [
+     0.0,
+     0.2775401687666166
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.0,
+    "tie_rate": 0.7,
+    "injury_delta_mean": -1276.511462402329,
+    "mean_success_turn": null,
+    "latency_ms": {
+     "mean": 0.08135050190321635,
+     "p50": 0.07385649951174855,
+     "p95": 0.1295141522859921,
+     "max": 0.23229799990076572,
+     "turns": 500
+    }
+   },
+   "reach": {
+    "episodes": 10,
+    "success_rate": 0.4,
+    "success_ci95": [
+     0.16817758120350967,
+     0.6873304525498135
+    ],
+    "success_rate_nontrivial": 0.4,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.8,
+    "tie_rate": 0.1,
+    "injury_delta_mean": 24558.49897460937,
+    "mean_success_turn": 4.0,
+    "latency_ms": {
+     "mean": 0.0827141449735791,
+     "p50": 0.06997150012466591,
+     "p95": 0.13225855182099616,
+     "max": 0.2672730006452184,
+     "turns": 400
+    }
+   }
+  },
+  "by_opponent": {
+   "passive": {
+    "episodes": 12,
+    "success_rate": 0.4166666666666667,
+    "success_ci95": [
+     0.19325746190524656,
+     0.6804926643446272
+    ],
+    "success_rate_nontrivial": 0.4166666666666667,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.5,
+    "tie_rate": 0.3333333333333333,
+    "injury_delta_mean": 29378.72542826334,
+    "mean_success_turn": 6.4,
+    "latency_ms": {
+     "mean": 0.08731275733293,
+     "p50": 0.07759549953334499,
+     "p95": 0.1365883490507258,
+     "max": 0.2672730006452184,
+     "turns": 540
+    }
+   },
+   "random": {
+    "episodes": 13,
+    "success_rate": 0.23076923076923078,
+    "success_ci95": [
+     0.08179379092465713,
+     0.5025687399512693
+    ],
+    "success_rate_nontrivial": 0.25,
+    "trivial_start_rate": 0.07692307692307687,
+    "win_rate": 0.8461538461538461,
+    "tie_rate": 0.0,
+    "injury_delta_mean": 13510.857778695878,
+    "mean_success_turn": 11.0,
+    "latency_ms": {
+     "mean": 0.08138212902967128,
+     "p50": 0.0747935009712819,
+     "p95": 0.12838795300922354,
+     "max": 0.27032300204155035,
+     "turns": 620
+    }
+   },
+   "scripted:advance_grab": {
+    "episodes": 25,
+    "success_rate": 0.24,
+    "success_ci95": [
+     0.11496157730326725,
+     0.43430059955238565
+    ],
+    "success_rate_nontrivial": 0.25,
+    "trivial_start_rate": 0.040000000000000036,
+    "win_rate": 0.16,
+    "tie_rate": 0.68,
+    "injury_delta_mean": -28.493973388668856,
+    "mean_success_turn": 11.833333333333334,
+    "latency_ms": {
+     "mean": 0.08097002175359634,
+     "p50": 0.07352600005106069,
+     "p95": 0.12776984949596223,
+     "max": 0.3187379988958128,
+     "turns": 1240
+    }
+   }
+  },
+  "by_pose": {
+   "preroll0": {
+    "episodes": 23,
+    "success_rate": 0.5652173913043478,
+    "success_ci95": [
+     0.3681104930501695,
+     0.7436563166780135
+    ],
+    "success_rate_nontrivial": 0.5652173913043478,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.4782608695652174,
+    "tie_rate": 0.4782608695652174,
+    "injury_delta_mean": 20920.239363960573,
+    "mean_success_turn": 10.0,
+    "latency_ms": {
+     "mean": 0.07845444861969382,
+     "p50": 0.06975349970161915,
+     "p95": 0.12925925148010717,
+     "max": 0.27032300204155035,
+     "turns": 1110
+    }
+   },
+   "preroll2": {
+    "episodes": 27,
+    "success_rate": 0.037037037037037035,
+    "success_ci95": [
+     0.006567976533097597,
+     0.1828385393415652
+    ],
+    "success_rate_nontrivial": 0.04,
+    "trivial_start_rate": 0.07407407407407407,
+    "win_rate": 0.37037037037037035,
+    "tie_rate": 0.37037037037037035,
+    "injury_delta_mean": 1715.1111687554294,
+    "mean_success_turn": 6.0,
+    "latency_ms": {
+     "mean": 0.0859877503602928,
+     "p50": 0.07775999984005466,
+     "p95": 0.1325723987974925,
+     "max": 0.3187379988958128,
+     "turns": 1290
+    }
+   }
+  }
+ },
+ {
+  "schema": 1,
+  "split": "val",
+  "definitions_version": "2.0.0",
+  "definitions_digest": "8063693eb0d51041c647967816bef343e85a31e1de468b4006699ddadfde43a3",
+  "n_episodes": 50,
+  "seed": 0,
+  "policy": "scripted:rush",
+  "turnframes": 5,
+  "wall_seconds": 140.8558450160017,
+  "overall": {
+   "episodes": 50,
+   "success_rate": 0.04,
+   "success_ci95": [
+    0.011038652660826577,
+    0.13460337877954667
+   ],
+   "success_rate_nontrivial": 0.041666666666666664,
+   "trivial_start_rate": 0.040000000000000036,
+   "win_rate": 0.5,
+   "tie_rate": 0.38,
+   "injury_delta_mean": 4794.8782104492175,
+   "mean_success_turn": 10.0,
+   "latency_ms": {
+    "mean": 0.028612571236408257,
+    "p50": 0.024500499421264976,
+    "p95": 0.05061789870524074,
+    "max": 0.1845780025178101,
+    "turns": 2400
+   }
+  },
+  "by_task": {
+   "control_clinch": {
+    "episodes": 10,
+    "success_rate": 0.0,
+    "success_ci95": [
+     0.0,
+     0.2775401687666166
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.5,
+    "tie_rate": 0.5,
+    "injury_delta_mean": 5775.511218261724,
+    "mean_success_turn": null,
+    "latency_ms": {
+     "mean": 0.033362148045853246,
+     "p50": 0.026095001885551028,
+     "p95": 0.0706423983501736,
+     "max": 0.1845780025178101,
+     "turns": 500
+    }
+   },
+   "control_keep_close": {
+    "episodes": 10,
+    "success_rate": 0.1,
+    "success_ci95": [
+     0.01787574951572113,
+     0.4041563854975721
+    ],
+    "success_rate_nontrivial": 0.1111111111111111,
+    "trivial_start_rate": 0.09999999999999998,
+    "win_rate": 0.9,
+    "tie_rate": 0.1,
+    "injury_delta_mean": 10411.002813720646,
+    "mean_success_turn": 17.0,
+    "latency_ms": {
+     "mean": 0.027515867943293415,
+     "p50": 0.024673001462360844,
+     "p95": 0.040322947825188735,
+     "max": 0.0927420005609747,
+     "turns": 500
+    }
+   },
+   "control_keep_distance": {
+    "episodes": 10,
+    "success_rate": 0.0,
+    "success_ci95": [
+     0.0,
+     0.2775401687666166
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.09999999999999998,
+    "win_rate": 0.2,
+    "tie_rate": 0.6,
+    "injury_delta_mean": -159.22303466798002,
+    "mean_success_turn": null,
+    "latency_ms": {
+     "mean": 0.027348067982529756,
+     "p50": 0.02419649899820797,
+     "p95": 0.04054320215800544,
+     "max": 0.18108400035998784,
+     "turns": 500
+    }
+   },
+   "escape": {
+    "episodes": 10,
+    "success_rate": 0.0,
+    "success_ci95": [
+     0.0,
+     0.2775401687666166
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.1,
+    "tie_rate": 0.6,
+    "injury_delta_mean": -508.65178222655993,
+    "mean_success_turn": null,
+    "latency_ms": {
+     "mean": 0.02792469592532143,
+     "p50": 0.024793498596409336,
+     "p95": 0.04752060049213465,
+     "max": 0.1067750017682556,
+     "turns": 500
+    }
+   },
+   "reach": {
+    "episodes": 10,
+    "success_rate": 0.1,
+    "success_ci95": [
+     0.01787574951572113,
+     0.4041563854975721
+    ],
+    "success_rate_nontrivial": 0.1,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.8,
+    "tie_rate": 0.1,
+    "injury_delta_mean": 8455.75183715826,
+    "mean_success_turn": 3.0,
+    "latency_ms": {
+     "mean": 0.026486952547202236,
+     "p50": 0.02324050001334399,
+     "p95": 0.0402604018745478,
+     "max": 0.09475900151301175,
+     "turns": 400
+    }
+   }
+  },
+  "by_opponent": {
+   "passive": {
+    "episodes": 12,
+    "success_rate": 0.0,
+    "success_ci95": [
+     0.0,
+     0.2425007574992425
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.6666666666666666,
+    "tie_rate": 0.25,
+    "injury_delta_mean": 6615.863037109381,
+    "mean_success_turn": null,
+    "latency_ms": {
+     "mean": 0.034600155534765996,
+     "p50": 0.028416998247848824,
+     "p95": 0.07210794883576453,
+     "max": 0.13751900041825138,
+     "turns": 540
+    }
+   },
+   "random": {
+    "episodes": 13,
+    "success_rate": 0.15384615384615385,
+    "success_ci95": [
+     0.04325726318273798,
+     0.4223517050863101
+    ],
+    "success_rate_nontrivial": 0.16666666666666666,
+    "trivial_start_rate": 0.07692307692307687,
+    "win_rate": 1.0,
+    "tie_rate": 0.0,
+    "injury_delta_mean": 12376.681039663456,
+    "mean_success_turn": 10.0,
+    "latency_ms": {
+     "mean": 0.02558786939428706,
+     "p50": 0.022937500034458935,
+     "p95": 0.03911530238838168,
+     "max": 0.07707100303377956,
+     "turns": 620
+    }
+   },
+   "scripted:advance_grab": {
+    "episodes": 25,
+    "success_rate": 0.0,
+    "success_ci95": [
+     0.0,
+     0.13319649395317873
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.040000000000000036,
+    "win_rate": 0.16,
+    "tie_rate": 0.64,
+    "injury_delta_mean": -21.73197753906399,
+    "mean_success_turn": null,
+    "latency_ms": {
+     "mean": 0.027517425769474357,
+     "p50": 0.02437799957988318,
+     "p95": 0.043771800665126634,
+     "max": 0.1845780025178101,
+     "turns": 1240
+    }
+   }
+  },
+  "by_pose": {
+   "preroll0": {
+    "episodes": 23,
+    "success_rate": 0.043478260869565216,
+    "success_ci95": [
+     0.0077164669621267445,
+     0.20991586494059142
+    ],
+    "success_rate_nontrivial": 0.043478260869565216,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.5217391304347826,
+    "tie_rate": 0.4782608695652174,
+    "injury_delta_mean": 8561.604423191235,
+    "mean_success_turn": 17.0,
+    "latency_ms": {
+     "mean": 0.027891691950588226,
+     "p50": 0.024045501049840823,
+     "p95": 0.048675800644559765,
+     "max": 0.1845780025178101,
+     "turns": 1110
+    }
+   },
+   "preroll2": {
+    "episodes": 27,
+    "success_rate": 0.037037037037037035,
+    "success_ci95": [
+     0.006567976533097597,
+     0.1828385393415652
+    ],
+    "success_rate_nontrivial": 0.04,
+    "trivial_start_rate": 0.07407407407407407,
+    "win_rate": 0.48148148148148145,
+    "tie_rate": 0.2962962962962963,
+    "injury_delta_mean": 1586.1855107060182,
+    "mean_success_turn": 3.0,
+    "latency_ms": {
+     "mean": 0.02923286271490456,
+     "p50": 0.025139001081697643,
+     "p95": 0.05402075021265772,
+     "max": 0.18108400035998784,
+     "turns": 1290
+    }
+   }
+  }
+ },
+ {
+  "schema": 1,
+  "split": "test_paraphrase",
+  "definitions_version": "2.0.0",
+  "definitions_digest": "8063693eb0d51041c647967816bef343e85a31e1de468b4006699ddadfde43a3",
+  "n_episodes": 25,
+  "seed": 0,
+  "policy": "random",
+  "turnframes": 5,
+  "wall_seconds": 58.4809203060031,
+  "overall": {
+   "episodes": 25,
+   "success_rate": 0.12,
+   "success_ci95": [
+    0.04166741357068093,
+    0.2995619218337349
+   ],
+   "success_rate_nontrivial": 0.13043478260869565,
+   "trivial_start_rate": 0.07999999999999996,
+   "win_rate": 0.32,
+   "tie_rate": 0.04,
+   "injury_delta_mean": -2355.5329565429897,
+   "mean_success_turn": 19.333333333333332,
+   "latency_ms": {
+    "mean": 0.051818397438789056,
+    "p50": 0.04794999949808698,
+    "p95": 0.07391264880425295,
+    "max": 0.439298997662263,
+    "turns": 1200
+   }
+  },
+  "by_task": {
+   "control_clinch": {
+    "episodes": 5,
+    "success_rate": 0.2,
+    "success_ci95": [
+     0.03622316096978745,
+     0.6244717358814613
+    ],
+    "success_rate_nontrivial": 0.2,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.4,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -4024.30942382812,
+    "mean_success_turn": 17.0,
+    "latency_ms": {
+     "mean": 0.050155392062151805,
+     "p50": 0.04681449900090229,
+     "p95": 0.07018405030976281,
+     "max": 0.10903599832090549,
+     "turns": 250
+    }
+   },
+   "control_keep_close": {
+    "episodes": 5,
+    "success_rate": 0.0,
+    "success_ci95": [
+     0.0,
+     0.43449149475208104
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.19999999999999996,
+    "win_rate": 0.6,
+    "tie_rate": 0.0,
+    "injury_delta_mean": 6360.074609375,
+    "mean_success_turn": null,
+    "latency_ms": {
+     "mean": 0.05605616779939737,
+     "p50": 0.049853999371407554,
+     "p95": 0.08369785009563196,
+     "max": 0.439298997662263,
+     "turns": 250
+    }
+   },
+   "control_keep_distance": {
+    "episodes": 5,
+    "success_rate": 0.0,
+    "success_ci95": [
+     0.0,
+     0.43449149475208104
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.19999999999999996,
+    "win_rate": 0.2,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -10713.37622070312,
+    "mean_success_turn": null,
+    "latency_ms": {
+     "mean": 0.0476791759574553,
+     "p50": 0.04550749872578308,
+     "p95": 0.067510500048229,
+     "max": 0.11247500151512213,
+     "turns": 250
+    }
+   },
+   "escape": {
+    "episodes": 5,
+    "success_rate": 0.2,
+    "success_ci95": [
+     0.03622316096978745,
+     0.6244717358814613
+    ],
+    "success_rate_nontrivial": 0.2,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.0,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -5981.25380859376,
+    "mean_success_turn": 34.0,
+    "latency_ms": {
+     "mean": 0.05368041193287354,
+     "p50": 0.051509998229448684,
+     "p95": 0.08073119861364828,
+     "max": 0.11668099978123792,
+     "turns": 250
+    }
+   },
+   "reach": {
+    "episodes": 5,
+    "success_rate": 0.2,
+    "success_ci95": [
+     0.03622316096978745,
+     0.6244717358814613
+    ],
+    "success_rate_nontrivial": 0.2,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.4,
+    "tie_rate": 0.2,
+    "injury_delta_mean": 2581.200061035052,
+    "mean_success_turn": 7.0,
+    "latency_ms": {
+     "mean": 0.05144644994288683,
+     "p50": 0.04648900176107418,
+     "p95": 0.06665924756816817,
+     "max": 0.22589199943467975,
+     "turns": 200
+    }
+   }
+  },
+  "by_opponent": {
+   "passive": {
+    "episodes": 6,
+    "success_rate": 0.16666666666666666,
+    "success_ci95": [
+     0.03005258587173032,
+     0.563509436563646
+    ],
+    "success_rate_nontrivial": 0.16666666666666666,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.3333333333333333,
+    "tie_rate": 0.0,
+    "injury_delta_mean": 6310.848602294843,
+    "mean_success_turn": 17.0,
+    "latency_ms": {
+     "mean": 0.051908314789115034,
+     "p50": 0.04884000009042211,
+     "p95": 0.07110339847713473,
+     "max": 0.22589199943467975,
+     "turns": 270
+    }
+   },
+   "random": {
+    "episodes": 6,
+    "success_rate": 0.16666666666666666,
+    "success_ci95": [
+     0.03005258587173032,
+     0.563509436563646
+    ],
+    "success_rate_nontrivial": 0.2,
+    "trivial_start_rate": 0.16666666666666663,
+    "win_rate": 0.3333333333333333,
+    "tie_rate": 0.16666666666666666,
+    "injury_delta_mean": -3294.2952473958335,
+    "mean_success_turn": 7.0,
+    "latency_ms": {
+     "mean": 0.05264123093842625,
+     "p50": 0.04777849972015247,
+     "p95": 0.07074144923535641,
+     "max": 0.439298997662263,
+     "turns": 290
+    }
+   },
+   "scripted:advance_grab": {
+    "episodes": 13,
+    "success_rate": 0.07692307692307693,
+    "success_ci95": [
+     0.013710066379696323,
+     0.3331453392824736
+    ],
+    "success_rate_nontrivial": 0.08333333333333333,
+    "trivial_start_rate": 0.07692307692307687,
+    "win_rate": 0.3076923076923077,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -5922.126464843755,
+    "mean_success_turn": 34.0,
+    "latency_ms": {
+     "mean": 0.05140761712709718,
+     "p50": 0.047676499889348634,
+     "p95": 0.07561625225207526,
+     "max": 0.2024060013354756,
+     "turns": 640
+    }
+   }
+  },
+  "by_pose": {
+   "preroll0": {
+    "episodes": 13,
+    "success_rate": 0.15384615384615385,
+    "success_ci95": [
+     0.04325726318273798,
+     0.4223517050863101
+    ],
+    "success_rate_nontrivial": 0.15384615384615385,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.46153846153846156,
+    "tie_rate": 0.07692307692307693,
+    "injury_delta_mean": 1603.9740271934693,
+    "mean_success_turn": 12.0,
+    "latency_ms": {
+     "mean": 0.0516106613201461,
+     "p50": 0.048454501666128635,
+     "p95": 0.07208410079329038,
+     "max": 0.22589199943467975,
+     "turns": 620
+    }
+   },
+   "preroll2": {
+    "episodes": 12,
+    "success_rate": 0.08333333333333333,
+    "success_ci95": [
+     0.014864709450773478,
+     0.35388592179859524
+    ],
+    "success_rate_nontrivial": 0.1,
+    "trivial_start_rate": 0.16666666666666663,
+    "win_rate": 0.16666666666666666,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -6644.99885559082,
+    "mean_success_turn": 34.0,
+    "latency_ms": {
+     "mean": 0.05204046018630395,
+     "p50": 0.04774250010086689,
+     "p95": 0.07463570091204016,
+     "max": 0.439298997662263,
+     "turns": 580
+    }
+   }
+  }
+ },
+ {
+  "schema": 1,
+  "split": "test_opponent",
+  "definitions_version": "2.0.0",
+  "definitions_digest": "8063693eb0d51041c647967816bef343e85a31e1de468b4006699ddadfde43a3",
+  "n_episodes": 25,
+  "seed": 0,
+  "policy": "random",
+  "turnframes": 5,
+  "wall_seconds": 62.82998109899927,
+  "overall": {
+   "episodes": 25,
+   "success_rate": 0.2,
+   "success_ci95": [
+    0.08860454100652487,
+    0.3913133553653824
+   ],
+   "success_rate_nontrivial": 0.17391304347826086,
+   "trivial_start_rate": 0.07999999999999996,
+   "win_rate": 0.0,
+   "tie_rate": 0.0,
+   "injury_delta_mean": -8179.481653289782,
+   "mean_success_turn": 21.4,
+   "latency_ms": {
+    "mean": 0.06017607418774181,
+    "p50": 0.05225150198384654,
+    "p95": 0.09714414954942185,
+    "max": 0.3078159970755223,
+    "turns": 1200
+   }
+  },
+  "by_task": {
+   "control_clinch": {
+    "episodes": 5,
+    "success_rate": 0.2,
+    "success_ci95": [
+     0.03622316096978745,
+     0.6244717358814613
+    ],
+    "success_rate_nontrivial": 0.2,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.0,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -7838.23244628908,
+    "mean_success_turn": 13.0,
+    "latency_ms": {
+     "mean": 0.0569542159937555,
+     "p50": 0.05252150003798306,
+     "p95": 0.08196290091291303,
+     "max": 0.1629149992368184,
+     "turns": 250
+    }
+   },
+   "control_keep_close": {
+    "episodes": 5,
+    "success_rate": 0.2,
+    "success_ci95": [
+     0.03622316096978745,
+     0.6244717358814613
+    ],
+    "success_rate_nontrivial": 0.25,
+    "trivial_start_rate": 0.19999999999999996,
+    "win_rate": 0.0,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -8696.898165893563,
+    "mean_success_turn": 7.0,
+    "latency_ms": {
+     "mean": 0.057201419956982136,
+     "p50": 0.050824997742893174,
+     "p95": 0.09414059950358931,
+     "max": 0.22084299780544825,
+     "turns": 250
+    }
+   },
+   "control_keep_distance": {
+    "episodes": 5,
+    "success_rate": 0.2,
+    "success_ci95": [
+     0.03622316096978745,
+     0.6244717358814613
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.19999999999999996,
+    "win_rate": 0.0,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -6259.70307617188,
+    "mean_success_turn": 10.0,
+    "latency_ms": {
+     "mean": 0.05917502810189035,
+     "p50": 0.051814498874591663,
+     "p95": 0.09929185071086977,
+     "max": 0.2495299995644018,
+     "turns": 250
+    }
+   },
+   "escape": {
+    "episodes": 5,
+    "success_rate": 0.4,
+    "success_ci95": [
+     0.1176182311592533,
+     0.769280067791163
+    ],
+    "success_rate_nontrivial": 0.4,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.0,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -10036.282537078969,
+    "mean_success_turn": 38.5,
+    "latency_ms": {
+     "mean": 0.0618065720773302,
+     "p50": 0.05295549999573268,
+     "p95": 0.10029729946836592,
+     "max": 0.2580640029918868,
+     "turns": 250
+    }
+   },
+   "reach": {
+    "episodes": 5,
+    "success_rate": 0.0,
+    "success_ci95": [
+     0.0,
+     0.43449149475208104
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.0,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -8066.292041015424,
+    "mean_success_turn": null,
+    "latency_ms": {
+     "mean": 0.06713489996400313,
+     "p50": 0.05279600009089336,
+     "p95": 0.15684575046179794,
+     "max": 0.3078159970755223,
+     "turns": 200
+    }
+   }
+  },
+  "by_opponent": {
+   "scripted:flail": {
+    "episodes": 6,
+    "success_rate": 0.16666666666666666,
+    "success_ci95": [
+     0.03005258587173032,
+     0.563509436563646
+    ],
+    "success_rate_nontrivial": 0.16666666666666666,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.0,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -8881.949849446533,
+    "mean_success_turn": 13.0,
+    "latency_ms": {
+     "mean": 0.05799165924987325,
+     "p50": 0.052290000894572586,
+     "p95": 0.09046230115927756,
+     "max": 0.11898299999302253,
+     "turns": 270
+    }
+   },
+   "scripted:guard": {
+    "episodes": 6,
+    "success_rate": 0.0,
+    "success_ci95": [
+     0.0,
+     0.3903430336530645
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.16666666666666663,
+    "win_rate": 0.0,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -9370.200253804434,
+    "mean_success_turn": null,
+    "latency_ms": {
+     "mean": 0.0529316138046601,
+     "p50": 0.049780499466578476,
+     "p95": 0.07250859853229485,
+     "max": 0.09726099960971624,
+     "turns": 290
+    }
+   },
+   "scripted:rush": {
+    "episodes": 13,
+    "success_rate": 0.3076923076923077,
+    "success_ci95": [
+     0.12680497161618087,
+     0.5763111218666236
+    ],
+    "success_rate_nontrivial": 0.25,
+    "trivial_start_rate": 0.07692307692307687,
+    "win_rate": 0.0,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -7305.703131749135,
+    "mean_success_turn": 23.5,
+    "latency_ms": {
+     "mean": 0.06438027035073901,
+     "p50": 0.05429399971035309,
+     "p95": 0.11158139986946469,
+     "max": 0.3078159970755223,
+     "turns": 640
+    }
+   }
+  },
+  "by_pose": {
+   "preroll0": {
+    "episodes": 13,
+    "success_rate": 0.15384615384615385,
+    "success_ci95": [
+     0.04325726318273798,
+     0.4223517050863101
+    ],
+    "success_rate_nontrivial": 0.15384615384615385,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.0,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -10588.124048966556,
+    "mean_success_turn": 10.0,
+    "latency_ms": {
+     "mean": 0.058748898393992756,
+     "p50": 0.05268049972073641,
+     "p95": 0.09365089899802113,
+     "max": 0.2495299995644018,
+     "turns": 620
+    }
+   },
+   "preroll2": {
+    "episodes": 12,
+    "success_rate": 0.25,
+    "success_ci95": [
+     0.08894003962896138,
+     0.53231033912066
+    ],
+    "success_rate_nontrivial": 0.2,
+    "trivial_start_rate": 0.16666666666666663,
+    "win_rate": 0.0,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -5570.1190579732765,
+    "mean_success_turn": 29.0,
+    "latency_ms": {
+     "mean": 0.06170167589830114,
+     "p50": 0.051991501095471904,
+     "p95": 0.10811184893100284,
+     "max": 0.3078159970755223,
+     "turns": 580
+    }
+   }
+  }
+ },
+ {
+  "schema": 1,
+  "split": "test_pose",
+  "definitions_version": "2.0.0",
+  "definitions_digest": "8063693eb0d51041c647967816bef343e85a31e1de468b4006699ddadfde43a3",
+  "n_episodes": 25,
+  "seed": 0,
+  "policy": "random",
+  "turnframes": 5,
+  "wall_seconds": 173.79056758499792,
+  "overall": {
+   "episodes": 25,
+   "success_rate": 0.16,
+   "success_ci95": [
+    0.06403347608577989,
+    0.34654013980238163
+   ],
+   "success_rate_nontrivial": 0.17391304347826086,
+   "trivial_start_rate": 0.07999999999999996,
+   "win_rate": 0.2,
+   "tie_rate": 0.0,
+   "injury_delta_mean": -1819.7693493651948,
+   "mean_success_turn": 21.75,
+   "latency_ms": {
+    "mean": 0.12435619923356474,
+    "p50": 0.0898120015335735,
+    "p95": 0.23761050142638848,
+    "max": 0.7875179944676347,
+    "turns": 1200
+   }
+  },
+  "by_task": {
+   "control_clinch": {
+    "episodes": 5,
+    "success_rate": 0.0,
+    "success_ci95": [
+     0.0,
+     0.43449149475208104
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.4,
+    "tie_rate": 0.0,
+    "injury_delta_mean": 5117.83488769531,
+    "mean_success_turn": null,
+    "latency_ms": {
+     "mean": 0.10303398425457999,
+     "p50": 0.06481650052592158,
+     "p95": 0.21801730217703152,
+     "max": 0.7875179944676347,
+     "turns": 250
+    }
+   },
+   "control_keep_close": {
+    "episodes": 5,
+    "success_rate": 0.0,
+    "success_ci95": [
+     0.0,
+     0.43449149475208104
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.2,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -2696.310723876948,
+    "mean_success_turn": null,
+    "latency_ms": {
+     "mean": 0.1507868360786233,
+     "p50": 0.1719015017442871,
+     "p95": 0.2525693002098705,
+     "max": 0.558070998522453,
+     "turns": 250
+    }
+   },
+   "control_keep_distance": {
+    "episodes": 5,
+    "success_rate": 0.2,
+    "success_ci95": [
+     0.03622316096978745,
+     0.6244717358814613
+    ],
+    "success_rate_nontrivial": 0.25,
+    "trivial_start_rate": 0.19999999999999996,
+    "win_rate": 0.0,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -4658.294377136216,
+    "mean_success_turn": 17.0,
+    "latency_ms": {
+     "mean": 0.13285649218596518,
+     "p50": 0.1671544996497687,
+     "p95": 0.22914869841770266,
+     "max": 0.5584289974649437,
+     "turns": 250
+    }
+   },
+   "escape": {
+    "episodes": 5,
+    "success_rate": 0.4,
+    "success_ci95": [
+     0.1176182311592533,
+     0.769280067791163
+    ],
+    "success_rate_nontrivial": 0.4,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.2,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -4666.321937560946,
+    "mean_success_turn": 34.0,
+    "latency_ms": {
+     "mean": 0.10806931569823064,
+     "p50": 0.05317899558576755,
+     "p95": 0.22372170169546735,
+     "max": 0.2908320020651445,
+     "turns": 250
+    }
+   },
+   "reach": {
+    "episodes": 5,
+    "success_rate": 0.2,
+    "success_ci95": [
+     0.03622316096978745,
+     0.6244717358814613
+    ],
+    "success_rate_nontrivial": 0.25,
+    "trivial_start_rate": 0.19999999999999996,
+    "win_rate": 0.2,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -2195.7545959471718,
+    "mean_success_turn": 2.0,
+    "latency_ms": {
+     "mean": 0.12770391012963955,
+     "p50": 0.10299399582436308,
+     "p95": 0.24542349856346846,
+     "max": 0.5636689966195263,
+     "turns": 200
+    }
+   }
+  },
+  "by_opponent": {
+   "passive": {
+    "episodes": 6,
+    "success_rate": 0.0,
+    "success_ci95": [
+     0.0,
+     0.3903430336530645
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.16666666666666663,
+    "win_rate": 0.0,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -3484.6538543701195,
+    "mean_success_turn": null,
+    "latency_ms": {
+     "mean": 0.149796092928564,
+     "p50": 0.1719015017442871,
+     "p95": 0.24422249771305357,
+     "max": 0.7875179944676347,
+     "turns": 270
+    }
+   },
+   "random": {
+    "episodes": 6,
+    "success_rate": 0.0,
+    "success_ci95": [
+     0.0,
+     0.3903430336530645
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.6666666666666666,
+    "tie_rate": 0.0,
+    "injury_delta_mean": 5994.247517903733,
+    "mean_success_turn": null,
+    "latency_ms": {
+     "mean": 0.09615998617313191,
+     "p50": 0.06641849904553965,
+     "p95": 0.23130089975893497,
+     "max": 0.3115030049229972,
+     "turns": 290
+    }
+   },
+   "scripted:advance_grab": {
+    "episodes": 13,
+    "success_rate": 0.3076923076923077,
+    "success_ci95": [
+     0.12680497161618087,
+     0.5763111218666236
+    ],
+    "success_rate_nontrivial": 0.3333333333333333,
+    "trivial_start_rate": 0.07692307692307687,
+    "win_rate": 0.07692307692307693,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -4657.830439640888,
+    "mean_success_turn": 21.75,
+    "latency_ms": {
+     "mean": 0.12640015312399555,
+     "p50": 0.11342650032020174,
+     "p95": 0.2348460518987849,
+     "max": 0.5584289974649437,
+     "turns": 640
+    }
+   }
+  },
+  "by_pose": {
+   "preroll6": {
+    "episodes": 25,
+    "success_rate": 0.16,
+    "success_ci95": [
+     0.06403347608577989,
+     0.34654013980238163
+    ],
+    "success_rate_nontrivial": 0.17391304347826086,
+    "trivial_start_rate": 0.07999999999999996,
+    "win_rate": 0.2,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -1819.7693493651948,
+    "mean_success_turn": 21.75,
+    "latency_ms": {
+     "mean": 0.12435619923356474,
+     "p50": 0.0898120015335735,
+     "p95": 0.23761050142638848,
+     "max": 0.7875179944676347,
+     "turns": 1200
+    }
+   }
+  }
+ },
+ {
+  "schema": 1,
+  "split": "test_composition",
+  "definitions_version": "2.0.0",
+  "definitions_digest": "8063693eb0d51041c647967816bef343e85a31e1de468b4006699ddadfde43a3",
+  "n_episodes": 24,
+  "seed": 0,
+  "policy": "random",
+  "turnframes": 5,
+  "wall_seconds": 194.89939039100136,
+  "overall": {
+   "episodes": 24,
+   "success_rate": 0.08333333333333333,
+   "success_ci95": [
+    0.023158327842973503,
+    0.258492152014506
+   ],
+   "success_rate_nontrivial": 0.08333333333333333,
+   "trivial_start_rate": 0.0,
+   "win_rate": 0.16666666666666666,
+   "tie_rate": 0.08333333333333333,
+   "injury_delta_mean": -8871.749038696345,
+   "mean_success_turn": 45.0,
+   "latency_ms": {
+    "mean": 0.09721043078343428,
+    "p50": 0.05779850107501261,
+    "p95": 0.2243417991849128,
+    "max": 0.6398770055966452,
+    "turns": 1920
+   }
+  },
+  "by_task": {
+   "control_keep_close_then_escape": {
+    "episodes": 6,
+    "success_rate": 0.16666666666666666,
+    "success_ci95": [
+     0.03005258587173032,
+     0.563509436563646
+    ],
+    "success_rate_nontrivial": 0.16666666666666666,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.16666666666666666,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -22650.59038289395,
+    "mean_success_turn": 61.0,
+    "latency_ms": {
+     "mean": 0.10076126465416262,
+     "p50": 0.056781500461511314,
+     "p95": 0.21989699380355882,
+     "max": 0.5329859995981678,
+     "turns": 480
+    }
+   },
+   "reach_then_control_clinch": {
+    "episodes": 6,
+    "success_rate": 0.16666666666666666,
+    "success_ci95": [
+     0.03005258587173032,
+     0.563509436563646
+    ],
+    "success_rate_nontrivial": 0.16666666666666666,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.5,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -2172.3621419270835,
+    "mean_success_turn": 29.0,
+    "latency_ms": {
+     "mean": 0.08636265224595263,
+     "p50": 0.054418498621089384,
+     "p95": 0.22270274857874023,
+     "max": 0.29650299984496087,
+     "turns": 480
+    }
+   },
+   "reach_then_control_keep_close": {
+    "episodes": 6,
+    "success_rate": 0.0,
+    "success_ci95": [
+     0.0,
+     0.3903430336530645
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.0,
+    "tie_rate": 0.3333333333333333,
+    "injury_delta_mean": -1975.1349283855,
+    "mean_success_turn": null,
+    "latency_ms": {
+     "mean": 0.09649632702348754,
+     "p50": 0.05821349986945279,
+     "p95": 0.22508009751618374,
+     "max": 0.5820329970447347,
+     "turns": 480
+    }
+   },
+   "reach_then_escape": {
+    "episodes": 6,
+    "success_rate": 0.0,
+    "success_ci95": [
+     0.0,
+     0.3903430336530645
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.0,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -8688.908701578846,
+    "mean_success_turn": null,
+    "latency_ms": {
+     "mean": 0.10522147921013432,
+     "p50": 0.059800997405545786,
+     "p95": 0.22760904867027418,
+     "max": 0.6398770055966452,
+     "turns": 480
+    }
+   }
+  },
+  "by_opponent": {
+   "passive": {
+    "episodes": 4,
+    "success_rate": 0.0,
+    "success_ci95": [
+     0.0,
+     0.48990002040399916
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.25,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -4244.4645996095005,
+    "mean_success_turn": null,
+    "latency_ms": {
+     "mean": 0.11469713124370173,
+     "p50": 0.05971700375084765,
+     "p95": 0.2394361512415344,
+     "max": 0.5820329970447347,
+     "turns": 320
+    }
+   },
+   "random": {
+    "episodes": 5,
+    "success_rate": 0.0,
+    "success_ci95": [
+     0.0,
+     0.43449149475208104
+    ],
+    "success_rate_nontrivial": 0.0,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.2,
+    "tie_rate": 0.4,
+    "injury_delta_mean": -190.4138671875,
+    "mean_success_turn": null,
+    "latency_ms": {
+     "mean": 0.08229511984609417,
+     "p50": 0.050499998906161636,
+     "p95": 0.2185437984735471,
+     "max": 0.4244560041115619,
+     "turns": 400
+    }
+   },
+   "scripted:advance_grab": {
+    "episodes": 15,
+    "success_rate": 0.13333333333333333,
+    "success_ci95": [
+     0.0373604698913593,
+     0.3788249920651624
+    ],
+    "success_rate_nontrivial": 0.13333333333333333,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.13333333333333333,
+    "tie_rate": 0.0,
+    "injury_delta_mean": -12999.469946289119,
+    "mean_success_turn": 45.0,
+    "latency_ms": {
+     "mean": 0.09751908097314299,
+     "p50": 0.05904900172026828,
+     "p95": 0.22253755159908903,
+     "max": 0.6398770055966452,
+     "turns": 1200
+    }
+   }
+  },
+  "by_pose": {
+   "preroll0": {
+    "episodes": 8,
+    "success_rate": 0.125,
+    "success_ci95": [
+     0.02241690886329617,
+     0.4708948057698615
+    ],
+    "success_rate_nontrivial": 0.125,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.25,
+    "tie_rate": 0.125,
+    "injury_delta_mean": -16033.914123535213,
+    "mean_success_turn": 29.0,
+    "latency_ms": {
+     "mean": 0.09682944531732574,
+     "p50": 0.0597555008425843,
+     "p95": 0.22296969509625342,
+     "max": 0.5329859995981678,
+     "turns": 640
+    }
+   },
+   "preroll2": {
+    "episodes": 16,
+    "success_rate": 0.0625,
+    "success_ci95": [
+     0.01111905730833121,
+     0.2832926836802987
+    ],
+    "success_rate_nontrivial": 0.0625,
+    "trivial_start_rate": 0.0,
+    "win_rate": 0.125,
+    "tie_rate": 0.0625,
+    "injury_delta_mean": -5290.666496276914,
+    "mean_success_turn": 61.0,
+    "latency_ms": {
+     "mean": 0.09740092351648855,
+     "p50": 0.05563000013353303,
+     "p95": 0.22514079610118642,
+     "max": 0.6398770055966452,
+     "turns": 1280
+    }
+   }
+  }
+ }
+]
