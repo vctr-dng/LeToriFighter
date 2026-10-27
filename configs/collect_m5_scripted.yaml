@@ -1,0 +1,32 @@
+# M5 collection without trained experts: scripted behaviours, random, and noise-injected mixtures.
+# 5 train tasks x 300 = 1500 episodes (about 69k turns). See docs/m5-dataset.md.
+#   uv run --group vla python scripts/collect_dataset.py run --config configs/collect_m5_scripted.yaml
+name: m5_scripted
+out_dir: data/m5/scripted_v1
+definitions: v2
+capture_size: 224
+plan_seed: 0
+segment_episodes: 50
+max_disk_gb: 15
+sources:
+  - name: scripted
+    policy: scripted:advance_grab
+    episodes: 100          # per task
+  - name: scripted_noisy
+    policy: {policy: "scripted:advance_grab", epsilon: 0.1, noise: 0.1}
+    episodes: 80
+  - name: mix_scripted_random
+    policy:
+      mix:
+        - {policy: "scripted:advance_grab", weight: 1}
+        - {policy: random, weight: 1}
+        - {policy: "scripted:flail", weight: 1}
+      noise: 0.05
+    episodes: 50
+  - name: random
+    policy: random
+    episodes: 30           # failures-heavy play data
+  - name: clips_random
+    policy: {mix: [{policy: random, weight: 1}, {policy: "scripted:guard", weight: 1}]}
+    episodes: 40
+    action_free: true      # frames and state only, goes to the `clips` dataset

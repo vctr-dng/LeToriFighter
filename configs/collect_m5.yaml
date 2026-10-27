@@ -1,0 +1,39 @@
+# M5 collection with PPO experts (checkpoints from scripts/train_ppo.py, see docs/m4-ppo.md).
+# Adjust the checkpoint paths; 5 train tasks x 300 = 1500 episodes (about 69k turns).
+#   uv run --group vla --group torch python scripts/collect_dataset.py run --config configs/collect_m5.yaml
+name: m5
+out_dir: data/m5/v1
+definitions: v2
+capture_size: 224
+plan_seed: 0
+segment_episodes: 50
+max_disk_gb: 15
+# Direct-launch workers (ToriLLE instance pool, not merged yet): per-worker kwargs for
+# TwoPlayerToriEnv, indexed by --worker-id, e.g.
+# worker_env_kwargs:
+#   - {game_dir: /srv/tori/w0, display: ":10", capture_display: ":10"}
+#   - {game_dir: /srv/tori/w1, display: ":11", capture_display: ":11"}
+sources:
+  - name: expert
+    policy: ppo:data/ppo/ppo_multi/best.pt
+    episodes: 90           # per task
+  - name: expert_noisy
+    policy: {policy: "ppo-sample:data/ppo/ppo_multi/best.pt", epsilon: 0.05, noise: 0.05}
+    episodes: 60
+  - name: scripted
+    policy: scripted:advance_grab
+    episodes: 40
+  - name: scripted_noisy
+    policy: {policy: "scripted:advance_grab", epsilon: 0.1, noise: 0.1}
+    episodes: 30
+  - name: random
+    policy: random
+    episodes: 30
+  - name: clips
+    policy:
+      mix:
+        - {policy: random, weight: 1}
+        - {policy: "ppo-sample:data/ppo/ppo_multi/best.pt", weight: 1}
+      epsilon: 0.2
+    episodes: 50
+    action_free: true
