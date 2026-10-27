@@ -47,4 +47,10 @@ def make_policy(name: str):
         return HoldPolicy()
     if name.startswith("scripted:"):
         return ScriptedPolicy(name)
-    raise ValueError(f"unknown policy {name!r}: random, hold or scripted:<behaviour>")
+    if name.startswith("vla:"):
+        from letorifighter.vla.adapter import load_policy  # needs `--group vla`
+
+        return load_policy(name.removeprefix("vla:"))
+    raise ValueError(
+        f"unknown policy {name!r}: random, hold, scripted:<behaviour> or vla:<checkpoint>"
+    )

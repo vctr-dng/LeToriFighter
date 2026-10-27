@@ -24,7 +24,7 @@ torille = { path = "../ToriLLE", editable = true }
 [tool.pyrefly]
 search-path = ["../ToriLLE"]
 # Optional dependency groups (torch, lerobot) are not installed by default.
-ignore-missing-imports = ["torch", "torch.*", "lerobot", "lerobot.*"]
+ignore-missing-imports = ["torch", "torch.*", "lerobot", "lerobot.*", "transformers", "transformers.*", "mlflow", "yaml", "safetensors.*", "huggingface_hub"]
 
 [dependency-groups]
 dev = [
@@ -42,8 +42,11 @@ torch = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-markers = ["native: drives the real Toribash game (needs Steam and a display); deselected by default"]
-addopts = "-m 'not native'"
+markers = [
+    "native: drives the real Toribash game (needs Steam and a display); deselected by default",
+    "gpu: loads SmolVLA weights and uses the GPU (needs `--group vla` and the HF cache); deselected by default",
+]
+addopts = "-m 'not native and not gpu'"
 
 [tool.uv]
 # lerobot 0.6.1 caps numpy<2.3 (no Python 3.14 wheels), torille needs >=2.5.4.
