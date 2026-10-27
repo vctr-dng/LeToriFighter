@@ -113,7 +113,10 @@ class FakeTwoPlayerEnv:
         turnframes: int = 5,
         observation_fn: Callable[[int, dict | None], dict] | None = None,
         injury_fn: Callable[[int], tuple[float, float]] | None = None,
+        capture_size: int | None = None,
     ) -> None:
+        self.capture_size = capture_size
+        self.resets = 0
         self.turns = turns
         self.turnframes = turnframes
         self.settings = FakeSettings(matchframes=turns * (turnframes + 1))
@@ -135,12 +138,26 @@ class FakeTwoPlayerEnv:
 
     def _observations(self, actions=None):
         if self.observation_fn is not None:
-            return self.observation_fn(self.turn, actions)
-        frame = float(self.turn * (self.turnframes + 1))
-        return dict.fromkeys(AGENTS, make_observation(match_frame=frame))
+            observations = self.observation_fn(self.turn, actions)
+        else:
+            frame = float(self.turn * (self.turnframes + 1))
+            observations = dict.fromkeys(AGENTS, make_observation(match_frame=frame))
+        if self.capture_size is not None:
+            rgb = self.synthetic_frame()
+            observations = {
+                agent: {**obs, "rgb": rgb} for agent, obs in observations.items()
+            }
+        return observations
+
+    def synthetic_frame(self) -> np.ndarray:
+        """Noise frame, a different picture every turn of every episode."""
+        size = self.capture_size or 0
+        rng = np.random.default_rng([self.resets, self.turn])
+        return rng.integers(0, 256, (size, size, 3), dtype=np.uint8)
 
     def reset(self, seed=None, options=None):
         self.seeds.append(seed)
+        self.resets += 1
         self.turns = self.settings.get("matchframes") // (self.turnframes + 1)
         self.turn = 0
         self.agents = list(AGENTS)
