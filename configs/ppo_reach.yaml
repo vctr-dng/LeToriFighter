@@ -1,0 +1,5 @@
+# Reach vs the train opponent pool (full run). See docs/m4-ppo.md.
+name: ppo_reach
+tasks: [reach]
+total_turns: 300000
+shaping_scale: 0.0

@@ -24,7 +24,7 @@ torille = { path = "../ToriLLE", editable = true }
 [tool.pyrefly]
 search-path = ["../ToriLLE"]
 # Optional dependency groups (torch, lerobot) are not installed by default.
-ignore-missing-imports = ["torch", "torch.*", "lerobot", "lerobot.*"]
+ignore-missing-imports = ["torch", "torch.*", "lerobot", "lerobot.*", "mlflow", "mlflow.*", "yaml"]
 
 [dependency-groups]
 dev = [
@@ -36,6 +36,11 @@ vla = [
 # Frozen-network opponents (`FrozenNetworkOpponent`); torch is imported lazily.
 torch = [
     "torch",
+]
+# PPO training (`scripts/train_ppo.py`): experiment tracking; PyYAML for configs.
+train = [
+    "mlflow-skinny",
+    "pyyaml",
 ]
 
 [tool.pytest.ini_options]

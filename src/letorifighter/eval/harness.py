@@ -141,10 +141,15 @@ def evaluate(
     seed: int = 0,
     out_path: str | Path | None = None,
     policy_name: str = "policy",
+    specs: list[EpisodeSpec] | None = None,
 ) -> dict:
-    """Run `policy` for `episodes` episodes of `split`; write JSON if `out_path` is given."""
+    """
+    Run `policy` for `episodes` episodes of `split`; write JSON if `out_path` is
+    given. `specs` replaces the sampled episodes (e.g. a filtered subset of the split).
+    """
     definitions: Definitions = env.definitions
-    specs = definitions.episodes(split, episodes, seed)
+    specs = specs if specs is not None else definitions.episodes(split, episodes, seed)
+    episodes = len(specs)
     started = time.perf_counter()
     records = [run_episode(policy, env, spec) for spec in specs]
     meta = {
