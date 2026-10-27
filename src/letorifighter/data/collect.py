@@ -40,7 +40,7 @@ import json
 import os
 import time
 from collections.abc import Callable
-from dataclasses import dataclass, field, fields
+from dataclasses import dataclass, field, fields, replace
 from pathlib import Path
 from typing import Any
 
@@ -107,6 +107,9 @@ class CollectConfig:
     segment_episodes: int = 50
     max_disk_gb: float = 15.0  # stop when `out_dir` exceeds this (project cap: 50 GB)
     use_videos: bool = True
+    horizon_override: int | None = (
+        None  # cut every episode to this many turns (smoke tests only)
+    )
     env_kwargs: dict = field(
         default_factory=dict
     )  # TwoPlayerToriEnv kwargs, every worker
@@ -193,6 +196,8 @@ def build_plan(config: CollectConfig, definitions: Definitions) -> list[PlanItem
                 if source.opponents and spec.opponent not in source.opponents:
                     continue
                 assert_train_spec(definitions, spec)
+                if config.horizon_override:
+                    spec = replace(spec, horizon_turns=config.horizon_override)
                 seen.add(spec.episode_seed)
                 items.append(PlanItem(source.name, spec, source.action_free))
             groups.append(items)
