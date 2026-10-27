@@ -1,0 +1,368 @@
+{
+ "version": "2.0.0",
+ "description": "Task, language and generalization splits for LeToriFighter, version 2. Same as v1 except control_keep_distance is played against chasers only (v1 stays frozen). Do not edit in place: add a new version file.",
+ "turnframes": 5,
+ "tasks": {
+  "reach": {
+   "id": 0,
+   "kind": "reach",
+   "params": {
+    "hold_turns": 2
+   },
+   "horizon_turns": 40,
+   "clauses": [
+    "touch the opponent",
+    "reach the other fighter",
+    "make contact with your opponent"
+   ],
+   "paraphrases": {
+    "train": [
+     "Touch the opponent.",
+     "Reach the other fighter.",
+     "Make contact with your opponent.",
+     "Get a hand on your opponent.",
+     "Go and touch the other player."
+    ],
+    "heldout": [
+     "Lay a hand on the opponent.",
+     "Close in and make contact."
+    ]
+   }
+  },
+  "control_keep_close": {
+   "id": 1,
+   "kind": "control",
+   "params": {
+    "config": "keep_close",
+    "hold_turns": 5
+   },
+   "horizon_turns": 50,
+   "clauses": [
+    "stay close to the opponent",
+    "keep your opponent within arm's reach",
+    "hold a close distance to the other fighter"
+   ],
+   "paraphrases": {
+    "train": [
+     "Stay close to the opponent.",
+     "Keep your opponent within arm's reach.",
+     "Hold a close distance to the other fighter.",
+     "Do not let the opponent get away from you.",
+     "Stand next to your opponent and stay there."
+    ],
+    "heldout": [
+     "Remain near the opponent.",
+     "Keep the other player right beside you."
+    ]
+   }
+  },
+  "control_keep_distance": {
+   "id": 2,
+   "kind": "control",
+   "params": {
+    "config": "keep_distance",
+    "hold_turns": 10
+   },
+   "horizon_turns": 50,
+   "clauses": [
+    "keep a medium distance from the opponent",
+    "stay at a moderate distance from your opponent",
+    "hold your ground at mid range from the other fighter"
+   ],
+   "paraphrases": {
+    "train": [
+     "Keep a medium distance from the opponent.",
+     "Hold your ground at mid range from the other fighter.",
+     "Stay at a moderate distance from your opponent.",
+     "Do not get too close to or too far from the opponent.",
+     "Keep your opponent at a middle distance."
+    ],
+    "heldout": [
+     "Maintain a middling gap to the opponent.",
+     "Stand a few steps away from the other player and hold that distance."
+    ]
+   },
+   "opponents": {
+    "train": [
+     "scripted:advance_grab"
+    ],
+    "heldout": [
+     "scripted:rush"
+    ]
+   }
+  },
+  "control_clinch": {
+   "id": 3,
+   "kind": "control",
+   "params": {
+    "config": "clinch",
+    "hold_turns": 5
+   },
+   "horizon_turns": 50,
+   "clauses": [
+    "grab the opponent and hold on",
+    "clinch with your opponent",
+    "take hold of the other fighter and keep gripping"
+   ],
+   "paraphrases": {
+    "train": [
+     "Grab the opponent and hold on.",
+     "Clinch with your opponent.",
+     "Take hold of the other fighter and do not let go.",
+     "Grip your opponent and keep gripping.",
+     "Hold the opponent in a clinch."
+    ],
+    "heldout": [
+     "Latch onto the opponent and hang on.",
+     "Seize the other player and keep your hold."
+    ]
+   }
+  },
+  "escape": {
+   "id": 4,
+   "kind": "escape",
+   "params": {
+    "distance": 3.0,
+    "hold_turns": 5,
+    "min_groin_height": 1.1
+   },
+   "horizon_turns": 50,
+   "clauses": [
+    "get away from the opponent",
+    "escape from the other fighter",
+    "break away from your opponent"
+   ],
+   "paraphrases": {
+    "train": [
+     "Get away from the opponent.",
+     "Escape from the other fighter.",
+     "Break away and put distance between you and your opponent.",
+     "Run from your opponent.",
+     "Flee the opponent."
+    ],
+    "heldout": [
+     "Get out of the opponent's reach and stay out.",
+     "Move far away from the other player."
+    ]
+   },
+   "opponents": {
+    "train": [
+     "scripted:advance_grab"
+    ],
+    "heldout": [
+     "scripted:rush"
+    ]
+   }
+  },
+  "reach_then_control_clinch": {
+   "id": 5,
+   "kind": "sequence",
+   "steps": [
+    "reach",
+    "control_clinch"
+   ],
+   "horizon_turns": 80
+  },
+  "reach_then_control_keep_close": {
+   "id": 6,
+   "kind": "sequence",
+   "steps": [
+    "reach",
+    "control_keep_close"
+   ],
+   "horizon_turns": 80
+  },
+  "control_keep_close_then_escape": {
+   "id": 7,
+   "kind": "sequence",
+   "steps": [
+    "control_keep_close",
+    "escape"
+   ],
+   "horizon_turns": 80,
+   "opponents": {
+    "train": [
+     "scripted:advance_grab"
+    ],
+    "heldout": [
+     "scripted:rush"
+    ]
+   }
+  },
+  "reach_then_escape": {
+   "id": 8,
+   "kind": "sequence",
+   "steps": [
+    "reach",
+    "escape"
+   ],
+   "horizon_turns": 80,
+   "opponents": {
+    "train": [
+     "scripted:advance_grab"
+    ],
+    "heldout": [
+     "scripted:rush"
+    ]
+   }
+  }
+ },
+ "composition_templates": [
+  "{a}, then {b}.",
+  "First {a}, and after that {b}.",
+  "{a} and then {b}.",
+  "Begin by trying to {a}. Once that is done, {b}."
+ ],
+ "opponents": {
+  "train": [
+   "passive",
+   "random",
+   "scripted:advance_grab"
+  ],
+  "heldout": [
+   "scripted:flail",
+   "scripted:guard",
+   "scripted:rush"
+  ]
+ },
+ "poses": {
+  "train": [
+   {
+    "preroll_turns": 0,
+    "seed_range": [
+     0,
+     0
+    ]
+   },
+   {
+    "preroll_turns": 2,
+    "seed_range": [
+     0,
+     999
+    ]
+   }
+  ],
+  "val": [
+   {
+    "preroll_turns": 0,
+    "seed_range": [
+     0,
+     0
+    ]
+   },
+   {
+    "preroll_turns": 2,
+    "seed_range": [
+     1000,
+     1999
+    ]
+   }
+  ],
+  "heldout": [
+   {
+    "preroll_turns": 6,
+    "seed_range": [
+     2000,
+     2999
+    ]
+   }
+  ]
+ },
+ "splits": {
+  "train": {
+   "tasks": [
+    "reach",
+    "control_keep_close",
+    "control_keep_distance",
+    "control_clinch",
+    "escape"
+   ],
+   "paraphrases": "train",
+   "opponents": "train",
+   "poses": "train",
+   "episode_seed_range": [
+    0,
+    999999
+   ]
+  },
+  "val": {
+   "tasks": [
+    "reach",
+    "control_keep_close",
+    "control_keep_distance",
+    "control_clinch",
+    "escape"
+   ],
+   "paraphrases": "train",
+   "opponents": "train",
+   "poses": "val",
+   "episode_seed_range": [
+    1000000,
+    1099999
+   ]
+  },
+  "test_paraphrase": {
+   "tasks": [
+    "reach",
+    "control_keep_close",
+    "control_keep_distance",
+    "control_clinch",
+    "escape"
+   ],
+   "paraphrases": "heldout",
+   "opponents": "train",
+   "poses": "val",
+   "episode_seed_range": [
+    2000000,
+    2099999
+   ]
+  },
+  "test_opponent": {
+   "tasks": [
+    "reach",
+    "control_keep_close",
+    "control_keep_distance",
+    "control_clinch",
+    "escape"
+   ],
+   "paraphrases": "train",
+   "opponents": "heldout",
+   "poses": "val",
+   "episode_seed_range": [
+    3000000,
+    3099999
+   ]
+  },
+  "test_pose": {
+   "tasks": [
+    "reach",
+    "control_keep_close",
+    "control_keep_distance",
+    "control_clinch",
+    "escape"
+   ],
+   "paraphrases": "train",
+   "opponents": "train",
+   "poses": "heldout",
+   "episode_seed_range": [
+    4000000,
+    4099999
+   ]
+  },
+  "test_composition": {
+   "tasks": [
+    "reach_then_control_clinch",
+    "reach_then_control_keep_close",
+    "control_keep_close_then_escape",
+    "reach_then_escape"
+   ],
+   "paraphrases": "train",
+   "opponents": "train",
+   "poses": "val",
+   "episode_seed_range": [
+    5000000,
+    5099999
+   ]
+  }
+ }
+}

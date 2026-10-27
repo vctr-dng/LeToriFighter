@@ -1,0 +1,13 @@
+# Smoke run: Reach vs passive, a few thousand turns.
+name: ppo_smoke
+tasks: [reach]
+opponents: [passive]
+total_turns: 3072
+draw_game: false
+eval_every_turns: 1536
+eval_episodes: 5
+final_eval_episodes: 10
+checkpoint_every_updates: 1
+ppo:
+  rollout_steps: 512
+  minibatch_size: 128
