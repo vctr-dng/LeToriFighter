@@ -179,8 +179,8 @@ def test_evaluate_reports_metrics_and_writes_json(tmp_path):
     report = evaluate(policy, env, "val", episodes=6, seed=0, out_path=path)
     saved = json.loads(path.read_text())
     assert saved["overall"]["episodes"] == 6
-    assert report["split"] == "val" and report["definitions_version"] == "1.0.0"
-    assert report["definitions_digest"] == DEFS.digest
+    assert report["split"] == "val" and report["definitions_version"] == "2.0.0"
+    assert report["definitions_digest"] == Definitions.load().digest
     overall = report["overall"]
     reach_episodes = [e for e in report["episodes"] if e["spec"]["task"] == "reach"]
     assert reach_episodes and all(e["success"] for e in reach_episodes)

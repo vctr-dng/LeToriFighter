@@ -39,7 +39,7 @@ from .detectors import (
 )
 
 SPLITS_DIR = Path(__file__).parent / "splits"
-DEFAULT_VERSION = "v1"
+DEFAULT_VERSION = "v2"
 
 
 @dataclass(frozen=True)
