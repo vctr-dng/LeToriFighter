@@ -218,3 +218,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Training outputs (checkpoints, MLflow store, logs)
+/data/
