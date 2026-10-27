@@ -76,6 +76,7 @@ class LeToriTaskEnv(gym.Env):
         terminate_on_success: bool = False,
         opponent_factory=make_opponent,
         draw_game: bool = False,
+        env_kwargs: dict | None = None,
     ) -> None:
         if learner_agent not in AGENTS:
             raise ValueError(f"learner_agent must be one of {AGENTS}")
@@ -96,7 +97,14 @@ class LeToriTaskEnv(gym.Env):
         if env is None:
             from torille.envs import TwoPlayerToriEnv
 
-            env = TwoPlayerToriEnv(matchframes=max_frames, turnframes=self.turnframes)
+            from letorifighter.direct import check_env_kwargs
+
+            # `env_kwargs`: launch_mode/game_dir/display of a ToriLLE InstancePool
+            # instance; the guard refuses anything that could open a desktop window
+            kwargs = check_env_kwargs(dict(env_kwargs or {}))
+            env = TwoPlayerToriEnv(
+                matchframes=max_frames, turnframes=self.turnframes, **kwargs
+            )
             env.set_draw_game(draw_game)
         self.env = env
         base = env.observation_space(self.learner)
