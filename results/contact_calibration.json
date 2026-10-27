@@ -1,0 +1,137 @@
+{
+ "episodes": 36,
+ "turn_boundaries": 1800,
+ "learners": [
+  "random",
+  "scripted:advance_grab",
+  "scripted:rush"
+ ],
+ "opponents": [
+  "passive",
+  "random",
+  "scripted:advance_grab",
+  "scripted:flail"
+ ],
+ "pair_min_distance": {
+  "r_hand-head": 0.214,
+  "r_hand-breast": 0.347,
+  "r_hand-chest": 0.329,
+  "r_hand-stomach": 0.416,
+  "r_hand-groin": 0.388,
+  "r_hand-r_pecs": 0.431,
+  "r_hand-r_biceps": 0.383,
+  "r_hand-r_triceps": 0.239,
+  "r_hand-l_pecs": 0.272,
+  "r_hand-l_biceps": 0.251,
+  "r_hand-l_triceps": 0.209,
+  "r_hand-r_hand": 0.244,
+  "r_hand-l_hand": 0.07,
+  "r_hand-r_butt": 0.238,
+  "r_hand-l_butt": 0.361,
+  "r_hand-r_thigh": 0.302,
+  "r_hand-l_thigh": 0.551,
+  "r_hand-l_leg": 0.478,
+  "r_hand-r_leg": 0.477,
+  "r_hand-r_foot": 0.349,
+  "r_hand-l_foot": 0.282,
+  "l_hand-head": 0.213,
+  "l_hand-breast": 0.393,
+  "l_hand-chest": 0.345,
+  "l_hand-stomach": 0.4,
+  "l_hand-groin": 0.391,
+  "l_hand-r_pecs": 0.441,
+  "l_hand-r_biceps": 0.364,
+  "l_hand-r_triceps": 0.159,
+  "l_hand-l_pecs": 0.324,
+  "l_hand-l_biceps": 0.424,
+  "l_hand-l_triceps": 0.209,
+  "l_hand-r_hand": 0.07,
+  "l_hand-l_hand": 0.155,
+  "l_hand-r_butt": 0.343,
+  "l_hand-l_butt": 0.226,
+  "l_hand-r_thigh": 0.226,
+  "l_hand-l_thigh": 0.103,
+  "l_hand-l_leg": 0.355,
+  "l_hand-r_leg": 0.189,
+  "l_hand-r_foot": 0.264,
+  "l_hand-l_foot": 0.338
+ },
+ "nearer_hand_to_torso_part": {
+  "head": {
+   "min": 0.213,
+   "p1": 0.214,
+   "p5": 0.219
+  },
+  "breast": {
+   "min": 0.347,
+   "p1": 0.547,
+   "p5": 0.598
+  },
+  "chest": {
+   "min": 0.329,
+   "p1": 0.478,
+   "p5": 0.783
+  },
+  "stomach": {
+   "min": 0.4,
+   "p1": 0.523,
+   "p5": 0.777
+  },
+  "groin": {
+   "min": 0.388,
+   "p1": 0.535,
+   "p5": 0.804
+  }
+ },
+ "hand_to_torso_percentiles": {
+  "0": 0.213,
+  "1": 0.214,
+  "5": 0.219,
+  "10": 0.243,
+  "25": 0.597,
+  "50": 1.188
+ },
+ "hand_to_torso_threshold_stats": {
+  "0.15": {
+   "turns_within": 0,
+   "fraction_with_opponent_damage": null
+  },
+  "0.2": {
+   "turns_within": 0,
+   "fraction_with_opponent_damage": null
+  },
+  "0.25": {
+   "turns_within": 222,
+   "fraction_with_opponent_damage": 0.0
+  },
+  "0.3": {
+   "turns_within": 326,
+   "fraction_with_opponent_damage": 0.018
+  },
+  "0.4": {
+   "turns_within": 368,
+   "fraction_with_opponent_damage": 0.041
+  },
+  "0.5": {
+   "turns_within": 401,
+   "fraction_with_opponent_damage": 0.057
+  },
+  "0.7": {
+   "turns_within": 511,
+   "fraction_with_opponent_damage": 0.084
+  },
+  "1.0": {
+   "turns_within": 704,
+   "fraction_with_opponent_damage": 0.089
+  }
+ },
+ "base_rate_opponent_damage": 0.055,
+ "any_pair_min_distance": 0.07,
+ "any_pair_percentiles": {
+  "0": 0.07,
+  "1": 0.07,
+  "5": 0.071,
+  "25": 0.216,
+  "50": 0.352
+ }
+}

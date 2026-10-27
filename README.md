@@ -13,6 +13,12 @@ Language-conditioned control in Toribash with VLA and WAM models. See
 - `src/letorifighter/testing.py`: synthetic observations and a fake two-player
   env for tests without the game.
 - `src/letorifighter/data/`: LeRobot v3 episode writer.
+- `src/letorifighter/tasks/`: M3 tasks (Reach, Control, Escape and compositions),
+  success detectors, language templates, the frozen split definitions
+  (`tasks/splits/v1.json`) and `LeToriTaskEnv`, a single-agent Gymnasium
+  wrapper (task id and instruction in the observation). See `docs/m3-tasks-eval.md`.
+- `src/letorifighter/eval/`: evaluation harness. Run a split with
+  `flock /tmp/toribash-game.lock uv run python -m letorifighter.eval --split val --episodes 20 --policy random --out results/eval.json`.
 
 ## Tests
 
