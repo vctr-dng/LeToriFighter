@@ -23,3 +23,16 @@ torille = { path = "../ToriLLE", editable = true }
 
 [tool.pyrefly]
 search-path = ["../ToriLLE"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
+vla = [
+    "lerobot==0.4.4",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["native: drives the real Toribash game (needs Steam and a display); deselected by default"]
+addopts = "-m 'not native'"
