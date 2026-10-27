@@ -42,7 +42,7 @@ def test_roundtrip(tmp_path, use_videos):
         writer.write_episodes(episodes)
 
     ds = LeRobotDataset("local/test", root=root)
-    assert ds.meta.info["codebase_version"] == "v3.0"
+    assert ds.meta.info.codebase_version == "v3.0"
     assert ds.num_episodes == 2
     assert ds.num_frames == sum(LENGTHS)
     assert sorted(ds.meta.tasks.index) == sorted(TASKS)
@@ -91,3 +91,22 @@ def test_rejects_bad_actions(tmp_path):
     )
     with pytest.raises(ValueError, match="0..3"):
         writer.write_episode(**bad)
+
+
+def test_scalar_extra_feature(tmp_path):
+    """Shape (1,) extras work on LeRobot 0.6.1 (they failed on 0.4.4)."""
+    rng = np.random.default_rng(0)
+    episode = make_episode(rng, 3, "x")
+    episode["extras"] = {"task_id": np.arange(3).reshape(3, 1)}
+    with LeRobotEpisodeWriter(
+        tmp_path / "ds",
+        "local/test",
+        fps=10,
+        image_shape=(H, W, 3),
+        state_dim=STATE_DIM,
+        extra_features={"task_id": ("int64", (1,))},
+        use_videos=False,
+    ) as writer:
+        writer.write_episode(**episode)
+    ds = LeRobotDataset("local/test", root=tmp_path / "ds")
+    assert [int(ds[t]["task_id"]) for t in range(3)] == [0, 1, 2]

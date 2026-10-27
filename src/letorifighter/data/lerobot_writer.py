@@ -48,8 +48,7 @@ class LeRobotEpisodeWriter:
             image_shape: (height, width, 3) of the frames.
             state_dim: Length of the state vector.
             extra_features: Optional per-step fields as {name: (dtype, shape)},
-                for example {"progress": ("float32", (2,))}. Shape (1,)
-                is rejected (LeRobot 0.4.4 cannot write it).
+                for example {"progress": ("float32", (2,))}.
             use_videos: Encode frames to mp4 (LeRobot default, needs ffmpeg
                 codecs). If False, frames are stored as PNG inside parquet.
         """
@@ -80,10 +79,6 @@ class LeRobotEpisodeWriter:
             },
         }
         for name, (dtype, shape) in self.extra_features.items():
-            if tuple(shape) == (1,):
-                # LeRobot 0.4.4 maps shape (1,) to a scalar HF column but
-                # validates frames as shape (1,), so writing always fails.
-                raise ValueError(f"{name}: shape (1,) is unsupported, use (2,) or more")
             features[name] = {"dtype": dtype, "shape": tuple(shape), "names": None}
         self.dataset: LeRobotDataset = LeRobotDataset.create(
             repo_id=repo_id,

@@ -17,7 +17,9 @@ def main() -> None:
     parser.add_argument("--episodes", type=int, default=10)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument(
-        "--policy", default="random", help="random, hold or scripted:<behaviour>"
+        "--policy",
+        default="random",
+        help="random, hold, scripted:<behaviour> or vla:<checkpoint dir>",
     )
     parser.add_argument("--out", default=None, help="JSON report path")
     parser.add_argument("--draw", action="store_true", help="draw the game")
