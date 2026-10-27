@@ -7,6 +7,7 @@ behaviour (the own frame has x lateral, y forward-negative and z up: at the
 start the other fighter is at y = -1.3 m).
 
 * `advance_grab`: pitch forward and reach for the other fighter, then clamp.
+* `rush`: the same lean without the clamp or the grips: it keeps charging.
 * `flail`: arms swing in a fixed travelling pattern, grips open and close.
 * `guard`: crouch with the arms raised in front, hold and keep the hands open.
 """
@@ -76,6 +77,19 @@ def advance_grab(turn: int, obs: dict) -> np.ndarray:
     )
 
 
+def rush(turn: int, obs: dict) -> np.ndarray:
+    """Lean forward with the arms out and keep doing so, hands open, never clamps."""
+    del turn, obs
+    return _set(
+        _hold(),
+        r_pec=CONTRACT,
+        l_pec=CONTRACT,
+        abs=EXTEND,
+        r_hip=CONTRACT,
+        l_hip=CONTRACT,
+    )
+
+
 def flail(turn: int, obs: dict) -> np.ndarray:
     """
     Arms and torso swing in a fixed pattern: a 4-turn cycle of the pecs,
@@ -120,6 +134,7 @@ def guard(turn: int, obs: dict) -> np.ndarray:
 
 BEHAVIOURS: dict[str, Callable[[int, dict], np.ndarray]] = {
     "advance_grab": advance_grab,
+    "rush": rush,
     "flail": flail,
     "guard": guard,
 }
