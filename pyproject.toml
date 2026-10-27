@@ -23,6 +23,8 @@ torille = { path = "../ToriLLE", editable = true }
 
 [tool.pyrefly]
 search-path = ["../ToriLLE"]
+# Optional dependency groups (torch, lerobot) are not installed by default.
+ignore-missing-imports = ["torch", "torch.*", "lerobot", "lerobot.*"]
 
 [dependency-groups]
 dev = [
@@ -30,6 +32,10 @@ dev = [
 ]
 vla = [
     "lerobot==0.4.4",
+]
+# Frozen-network opponents (`FrozenNetworkOpponent`); torch is imported lazily.
+torch = [
+    "torch",
 ]
 
 [tool.pytest.ini_options]

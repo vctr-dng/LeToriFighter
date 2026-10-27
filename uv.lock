@@ -841,6 +841,9 @@ dependencies = [
 dev = [
     { name = "pytest" },
 ]
+torch = [
+    { name = "torch" },
+]
 vla = [
     { name = "lerobot" },
 ]
@@ -850,6 +853,7 @@ requires-dist = [{ name = "torille", editable = "../ToriLLE" }]
 
 [package.metadata.requires-dev]
 dev = [{ name = "pytest", specifier = ">=9.1.1" }]
+torch = [{ name = "torch" }]
 vla = [{ name = "lerobot", specifier = "==0.4.4" }]
 
 [[package]]
