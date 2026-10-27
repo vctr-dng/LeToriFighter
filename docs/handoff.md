@@ -37,8 +37,9 @@ sample-efficiency curve) is untested.
   times faster. Both paths exist:
   - Xvfb (default, guarded): `env -u DISPLAY -u WAYLAND_DISPLAY uv run ...`; the guard in
     `letorifighter/direct.py` refuses `:0` and the starting `$DISPLAY`.
-  - Steam launch on a real display: set `LETORIFIGHTER_ALLOW_STEAM=1` and pass `--launch steam` where
-    available (train, collect); this takes the global lock `/tmp/toribash-game.lock` and one instance only.
+  - Steam launch on a real display: set `LETORIFIGHTER_ALLOW_STEAM=1`, then `--set launch=steam` for
+    `train_ppo.py` and `--launch steam` for `collect_dataset.py run`; this takes the global lock
+    `/tmp/toribash-game.lock` and allows one instance only.
   - Untried: Xvfb with NVIDIA GL (a headless X server with the NVIDIA driver, or VirtualGL) so direct-launch
     instances get hardware rendering. This is the most promising way to get both parallel instances and speed.
 - First thing to do on the new machine: measure turns/s for the options above (`ToriLLE/scripts/pool_benchmark.py`
@@ -84,7 +85,7 @@ All commands from `LeToriFighter/`. On Xvfb they run as `env -u DISPLAY -u WAYLA
 2. **Collect the dataset** (target 1500 episodes, 5 tasks x 300; the scripted config runs without experts):
    ```
    uv run --group vla --group torch python scripts/collect_dataset.py run-pool --config configs/collect_m5.yaml --workers 4
-   uv run python scripts/make_dataset_card.py ...        # see docs/m5-dataset.md for arguments
+   uv run python scripts/make_dataset_card.py <dataset dir> --out docs/m5-dataset-card.md
    ```
    Storage is small (about 263 MB per 1000 episodes in shards, double until shards are deleted). Time is the
    limit. The collector checks that every episode comes from the train split (seven leakage checks).
