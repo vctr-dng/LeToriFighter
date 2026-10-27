@@ -79,6 +79,19 @@ def make_observation(
     }
 
 
+class FakeSettings:
+    """Minimal stand-in for `ToribashSettings` (`set` and `get`)."""
+
+    def __init__(self, **values) -> None:
+        self.values = dict(values)
+
+    def set(self, key, value) -> None:
+        self.values[key] = value
+
+    def get(self, key):
+        return self.values[key]
+
+
 class FakeTwoPlayerEnv:
     """
     Stand-in for `TwoPlayerToriEnv` that needs no game.
@@ -86,8 +99,10 @@ class FakeTwoPlayerEnv:
     `observation_fn(turn, actions)` returns the pair of observations after
     `turn` turns (turn 0 is the reset), default: the start pose every turn.
     The episode is truncated after `turns` turns. `injury_fn(turn)` returns
-    `(injury of player_0, injury of player_1)`, default zeros. `winner_fn(injuries)`
-    gives the winner at the end (0 tie, 1, 2), default by the lower injury.
+    `(injury of player_0, injury of player_1)`, default zeros. The winner is the
+    fighter with less damage. If `matchframes` is set in `env.settings` (as the
+    task wrapper does before each reset) the episode lasts
+    `matchframes // (turnframes + 1)` turns, as in the real game.
     """
 
     possible_agents = AGENTS
@@ -101,6 +116,7 @@ class FakeTwoPlayerEnv:
     ) -> None:
         self.turns = turns
         self.turnframes = turnframes
+        self.settings = FakeSettings(matchframes=turns * (turnframes + 1))
         self.observation_fn = observation_fn
         self.injury_fn = injury_fn or (lambda turn: (0.0, 0.0))
         self.agents: list[str] = []
@@ -108,6 +124,14 @@ class FakeTwoPlayerEnv:
         self.seeds: list[int | None] = []
         self.history: list[dict] = []  # actions of every step ever taken
         self.closed = False
+
+    def observation_space(self, agent):
+        from torille.envs.two_player import observation_space
+
+        return observation_space(10_000)
+
+    def set_draw_game(self, visibility):
+        pass
 
     def _observations(self, actions=None):
         if self.observation_fn is not None:
@@ -117,6 +141,7 @@ class FakeTwoPlayerEnv:
 
     def reset(self, seed=None, options=None):
         self.seeds.append(seed)
+        self.turns = self.settings.get("matchframes") // (self.turnframes + 1)
         self.turn = 0
         self.agents = list(AGENTS)
         return self._observations(), {agent: {} for agent in AGENTS}
@@ -157,3 +182,25 @@ class FakeTwoPlayerEnv:
 
     def close(self):
         self.closed = True
+
+
+def obs_at_distance(distance: float, **kwargs) -> dict:
+    """Observation with the other fighter's groin `distance` away (standing poses)."""
+    return make_observation(opponent_positions=facing_pose(distance), **kwargs)
+
+
+def obs_with_hand_contact(
+    hand: str = "r_hand",
+    target: str = "head",
+    gap: float = 0.1,
+    distance: float = START_DISTANCE,
+    grips=(0.0, 0.0),
+    **kwargs,
+) -> dict:
+    """Observation where the learner's `hand` is `gap` above the other fighter's `target` limb."""
+    opponent = facing_pose(distance)
+    own = STANDING_POSE.copy()
+    own[LIMB[hand]] = opponent[LIMB[target]] + np.array([0.0, 0.0, gap], np.float32)
+    obs = make_observation(own, opponent, **kwargs)
+    obs["self"]["grips"] = np.asarray(grips, np.float32)
+    return obs
