@@ -223,8 +223,13 @@ def _table(title: str, groups: dict[str, dict]) -> list[str]:
     return lines + [""]
 
 
+def human_size(size: int) -> str:
+    if size >= 1024**3:
+        return f"{size / 1024**3:.2f} GB"
+    return f"{size / 1024**2:.1f} MB"
+
+
 def render_card(card: dict) -> str:
-    gb = card["size_bytes"]["total"] / 1024**3
     split = card["split_policy"]
     versions = card["versions"]
     integrity = card["integrity"]
@@ -256,8 +261,8 @@ def render_card(card: dict) -> str:
             "(one step per turn, `turnframes=5`)"
         ),
         (
-            f"- Size on disk: {gb:.2f} GB (merged {card['size_bytes']['merged'] / 1024**3:.2f} GB, "
-            f"shards {card['size_bytes']['shards'] / 1024**3:.2f} GB)"
+            f"- Size on disk: {human_size(card['size_bytes']['total'])} (merged "
+            f"{human_size(card['size_bytes']['merged'])}, shards {human_size(card['size_bytes']['shards'])})"
         ),
         f"- Records read from: {card['records_from']}",
         "",

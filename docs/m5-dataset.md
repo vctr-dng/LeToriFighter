@@ -70,7 +70,28 @@ uv run python scripts/make_dataset_card.py data/m5/v1 --out docs/m5-dataset-card
 
 Train from the merged dataset: `scripts/train_vla.py --dataset data/m5/v1/merged/demos --repo-id local/m5-demos ...` (`VLADataset` reads the merged `demos` dataset directly; the `clips` dataset is for video co-training).
 
-MEASUREMENTS_PLACEHOLDER
+## Measurements and the target run
+
+Measured once on the real game on `:0`, Steam launch, capture at 224 px with `draw_game=True`, `scripted:advance_grab` and `random` learners over all five train tasks (13 episodes, 577 turns, horizons 40 to 50, including the game launch and mp4 encoding):
+
+- Throughput: 5.1 turns/s cumulative, 5.5 turns/s after the first episode, about 415 episodes/hour per instance (the machine was shared with other jobs, so expect up to 2x variation). Every episode played its full horizon (40 or 50 turns).
+- Disk: 3.4 MB for the 13 episodes in the shards, about **263 MB per 1000 episodes** (about 6 KB per turn; AV1 compresses the mostly static game view well; random-heavy play is the easy case, the number may grow with more motion). The merge duplicates it (3.5 MB merged for the same data), so budget about 0.55 GB per 1000 episodes until the shards are deleted. The 15 GB default cap is therefore far above what throughput allows (about 50k episodes); time is the limit, not disk.
+- Merge and card were run on this measured set: the merged dataset loads in LeRobot, the integrity check passed (13 episodes, 0 violations). Success counts of 13 episodes mean nothing; read them from the real run's card.
+
+**Proposed target: 1500 episodes** (5 train tasks x 300, about 72k turns at the horizons): about 3.5 hours on one instance (about 1 hour on 4 direct-launch workers at the same per-instance speed), about 0.4 GB in the shards. Mix per task (300 episodes), `configs/collect_m5.yaml` (with PPO experts) or `configs/collect_m5_scripted.yaml` (without):
+
+| Source | Per task | Purpose |
+|---|---|---|
+| expert (PPO, argmax) / scripted advance_grab | 90 / 100 | clean demos |
+| expert_noisy (PPO sampled, eps 0.05, noise 0.05) / scripted_noisy (eps 0.1, noise 0.1) | 60 / 80 | diversity, recovery behaviour |
+| scripted+random mixture / scripted | 40 / 50 | mixed quality |
+| random | 30 | failure-heavy play |
+| clips (action-free, mixture, eps 0.2) | 50 | frames and state only, `clips` dataset |
+
+Opponents follow the train pools (about 60% advance_grab because keep_distance and escape only use chasers, 20% passive, 20% random), poses are K=0 and K=2 train poses.
+
+Native test (`tests/test_collect_native.py`): **pending**. It ran once and collected real RGB frames, then a later run failed in the script step; the game on `:0` may not be used any more, so it was not investigated or re-run. It is to be run on the Xvfb direct-launch mode once ToriLLE provides it (`worker_env_kwargs` plus `--no-lock`).
+
 
 ## Search-based demonstrations (CEM, random shooting): not implemented, and why
 
