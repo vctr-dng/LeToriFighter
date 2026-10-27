@@ -2,6 +2,8 @@
 
 Language-conditioned control in a competitive physics game, using VLA and WAM (world action model) foundation models.
 
+> **Status (2026-10-27):** M0 to M5 code and M6 code are merged; no expert, dataset or real-data VLA run exists yet. See `docs/handoff.md` for the current state, the rendering-speed finding and the next steps.
+
 Effort estimates are engineering guesses for one developer, not measurements. Paper claims are tagged **V** (read in full or in part via alphaXiv) or **S** (seen in a search listing only). All benchmark numbers are the authors' own.
 
 ## 1. Goal
