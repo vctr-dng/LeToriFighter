@@ -1,4 +1,4 @@
-# M6: SmolVLA pipeline (interfaces a and b)
+# M6: SmolVLA pipeline (interfaces a, b and c)
 
 Code: `src/letorifighter/vla/`, trainer `scripts/train_vla.py`, synthetic data `scripts/make_synthetic_vla_data.py`. Tests: `tests/test_vla_*.py`. Measurements below were taken on the RTX A2000 8 GB, with the Toribash game not used. Everything here was proven on **synthetic** data only; see "What is untested".
 
@@ -29,7 +29,7 @@ All use SmolVLA (SmolVLM2-500M truncated to 16 layers plus the 100M action exper
 
 - **(a) `--head relaxed`.** Each state s in {0,1,2,3} becomes the level `2s/3 - 1` in {-1,-1/3,1/3,1}; the pretrained flow-matching expert is trained unchanged (MSE on the velocity; 22 components are zero-padded to `max_action_dim=32`). At inference the Euler sampler (`--num-flow-steps`, default 10) gives continuous values and each is rounded to the nearest level (`levels_to_states`). This is stock `SmolVLAPolicy`; LeRobot's normalisation processors are bypassed (levels are already in [-1,1]).
 - **(b) `--head ce`** (`vla/heads.py`). `DiscreteExpert` subclasses `VLAFlowMatching` (site-packages untouched). `action_in_proj`, `action_time_mlp_*` and `action_out_proj` are removed; the expert's input is `chunk_size` learned query embeddings, attending to the prefix and bidirectionally to each other; `Linear(expert_hidden, 22*4)` gives logits (B,k,22,4); loss is cross-entropy against the state at each component, masked by `action_is_pad`; inference is one forward pass and an argmax. New parameters: the query table and the logit head (and `state_proj` when the state is larger than 32).
-- **(c) `--head diffusion`**: see the section on the discrete diffusion head (branch `feature/vla-discrete-diffusion`).
+- **(c) `--head diffusion`** (`vla/diffusion.py`): masked-token discrete diffusion, see the section below.
 
 `--init pretrained` loads `lerobot/smolvla_base` (907 MB; pulls SmolVLM2-500M, 1.9 GB, into the HF cache). `max_state_dim` is set to the dataset's state size when it exceeds 32 (300 for the real observation: `flatten_observation`), so `state_proj.weight` is re-initialised (its bias is kept); everything else of (a) matches the checkpoint, (b) re-initialises 4 tensors. `--init vlm` keeps only the SmolVLM2 backbone (random expert), `--init scratch` is random everywhere (VLM config and tokenizer are still needed from the hub).
 
@@ -55,10 +55,11 @@ Other flags: `--steps --batch-size --lr --warmup-steps --eval-every --eval-frame
 export LETORIFIGHTER_DATA=$PWD/data
 # 1. synthetic learnable dataset (48 episodes x 24 steps, 64x64 frames, 300-d state)
 uv run --group vla python scripts/make_synthetic_vla_data.py --out $LETORIFIGHTER_DATA/synthetic/both
-# 2. train: (a) and (b)
+# 2. train: (a), (b) and (c)
 R="uv run --group vla python scripts/train_vla.py --repo-id local/synthetic --batch-size 32 --lr 3e-4 --eval-every 50 --dataset $LETORIFIGHTER_DATA/synthetic/both"
 $R --head relaxed --steps 200 --run-name proof-a-both
 $R --head ce      --steps 100 --run-name proof-b-both
+$R --head diffusion --batch-size 8 --steps 300 --run-name proof-c-both   # batch 32 does not fit, see below
 # 3. real data (once M5 exists): same script, --dataset <root> --repo-id <id>, defaults chunk 10, lr 1e-4
 # 4. inspect runs
 uv run --group vla mlflow ui --backend-store-uri sqlite:///$LETORIFIGHTER_DATA/mlruns/mlflow.db
@@ -100,6 +101,25 @@ Settings: pretrained init, bf16 autocast, batch 32, lr 3e-4, warmup 20, cosine d
 Notes: (a) is slower to fit than (b) (0.31 -> 0.50 -> 0.90 -> 0.98 accuracy at steps 50/100/150/200; the first attempt with lr 1e-4, batch 16 reached only 0.31 after 150 steps, so the SmolVLA default lr is too low for a budget this short). Step time is 0.7 s at batch 32 (about 45 samples/s). The synthetic task is too easy to separate pretrained from scratch (scratch reaches 100% too), so these runs prove that the pipeline learns and that every switch works, not that pretraining helps. Memory is the 2.2 to 3 GB of the feasibility doc plus batch-32 activations; full fine-tuning peaks at 4.7 GB.
 
 Disk: HF cache 2.8 GB; a finished run is 0.9 GB (`final/model.pt`, bf16 VLM plus fp32 expert); `last/` adds 1.2 to 2.5 GB while a run is in progress.
+
+## Interface (c): discrete diffusion head
+
+Status: **implemented and proven on the synthetic data; not validated on Toribash.** `vla/diffusion.py`, tests `tests/test_vla_diffusion.py` (tiny random model, CPU, no downloads: schedule, mask sampling, shapes, cache path equals the full forward, overfits a fixed batch).
+
+Design (Discrete Diffusion VLA, arXiv 2508.20072, read via alphaXiv), at SmolVLA scale instead of the paper's 7B OpenVLA backbone:
+
+- every entry of the `k x 22` chunk is one token with vocabulary {0,1,2,3,MASK}; no binning is needed because Toribash states are already categorical;
+- the action expert's input is `token_emb[token] + step_emb[j] + comp_emb[c]` for all `k*22` tokens (220 for k=10), attending to the prefix (images, language, state) and bidirectionally to each other, as in the paper; the pretrained VLM and expert layers are reused, the flow-matching projections are removed, a shared `Linear(hidden, 4)` gives the logits;
+- training (paper eq. 5): mask ratio `cos(pi/2 * r)`, `r ~ U(0,1)` per sample, at least one masked token, cross-entropy at the masked tokens only; padded chunk steps are always MASK and never in the loss;
+- inference: start fully masked, `--diffusion-steps T` rounds (default 4; the paper uses 12), each round commits the most confident masked tokens (max confidence, argmax) so that `floor(L cos(pi/2 t/T))` stay masked; the prefix key/value cache is computed once.
+
+Deviations from the paper, deliberately simple: masked tokens are weighted equally (no gamma weight), decoding is deterministic argmax (no tempered Gumbel sampling), and the secondary re-masking threshold check is not implemented. No ablation of these was run.
+
+Synthetic proof (same data and settings as the table above except batch 8, because the `k*22 = 220` action tokens make activations larger: batch 32 runs out of memory at 7.5 GB, batch 8 peaks at 3.2 GB), 300 steps, 247 s wall: final loss 0.0007, held-out accuracy 1.000, `exact_first` 0.990. Learning is later than (b) (accuracy 0.32 / 0.35 / 0.70 / 0.99 / 1.00 at steps 50 to 250, with a quarter of the samples per step).
+
+Inference latency per chunk (batch 1, bf16, includes preprocessing, GPU not otherwise busy, a few repeats so rough): (a) 10 flow steps about 270 ms, (b) about 130 ms, (c) about 150 to 210 ms for T=2 to 4 and about 390 ms for T=8. Peak inference memory about 0.95 GB for all three.
+
+What this does not show: that discrete diffusion beats the parallel CE head on Toribash (both reach 100% on the easy synthetic data), or that the iterative refinement matters (the synthetic chunks are a deterministic function of the observation, so one-pass prediction suffices). The expected benefit is joint modelling of the 22 components when the data is multimodal, which needs real play data.
 
 ## What is untested
 
