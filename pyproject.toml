@@ -31,7 +31,9 @@ dev = [
     "pytest>=9.1.1",
 ]
 vla = [
-    "lerobot==0.4.4",
+    "lerobot[smolvla,dataset,training]==0.6.1",
+    "mlflow>=3",
+    "pyyaml",
 ]
 # Frozen-network opponents (`FrozenNetworkOpponent`); torch is imported lazily.
 torch = [
@@ -42,3 +44,8 @@ torch = [
 testpaths = ["tests"]
 markers = ["native: drives the real Toribash game (needs Steam and a display); deselected by default"]
 addopts = "-m 'not native'"
+
+[tool.uv]
+# lerobot 0.6.1 caps numpy<2.3 (no Python 3.14 wheels), torille needs >=2.5.4.
+# The override is exercised by tests/test_lerobot_writer.py and the vla tests.
+override-dependencies = ["numpy>=2.5.4"]
