@@ -12,13 +12,30 @@ from letorifighter.tasks.definitions import SPLITS_DIR
 # a new version file instead of editing v1.
 V1_DIGEST = "d45ad80b63669b91322c7727d4ee15250f58af56e6c937a6003ddfc3c4909c37"
 
+V2_DIGEST = "8063693eb0d51041c647967816bef343e85a31e1de468b4006699ddadfde43a3"
+
 DEFS = Definitions.load("v1")
+DEFS2 = Definitions.load("v2")
 
 
 def test_v1_is_frozen():
     assert DEFS.version == "1.0.0"
     assert DEFS.digest == V1_DIGEST
     assert DEFS.validate() == []
+
+
+def test_v2_is_frozen_and_only_changes_keep_distance_opponents():
+    assert DEFS2.version == "2.0.0"
+    assert DEFS2.digest == V2_DIGEST
+    assert DEFS2.validate() == []
+    assert Definitions.load().digest == V2_DIGEST  # v2 is the default
+    changed = {name for name in DEFS.tasks if DEFS.tasks[name] != DEFS2.tasks[name]}
+    assert changed == {"control_keep_distance"}
+    for pool in ("train", "heldout"):
+        assert DEFS2.opponent_pool(
+            "control_keep_distance", pool
+        ) == DEFS2.opponent_pool("escape", pool)
+    assert DEFS.splits == DEFS2.splits
 
 
 def test_every_task_has_detector_and_language():
