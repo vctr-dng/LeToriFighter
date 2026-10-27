@@ -28,7 +28,7 @@ def synthetic_root(tmp_path_factory):
     return root
 
 
-@pytest.mark.parametrize("head", ["relaxed", "ce"])
+@pytest.mark.parametrize("head", ["relaxed", "ce", "diffusion"])
 def test_train_checkpoint_and_adapter(head, synthetic_root, tmp_path, monkeypatch):
     monkeypatch.setenv("LETORIFIGHTER_DATA", str(tmp_path))
     cfg = VLAConfig(
