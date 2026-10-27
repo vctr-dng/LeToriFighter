@@ -127,6 +127,8 @@ def build_policy(
     load_vlm = pretrained_weights and cfg.init in ("pretrained", "vlm")
     scfg = smolvla_config(cfg, state_dim, load_vlm)
     policy = policy_class(scfg)
+    if cfg.head == "diffusion":
+        policy.decode_steps = cfg.diffusion_steps
     if pretrained_weights and cfg.init == "pretrained":
         info = load_base_weights(policy, cfg.checkpoint)
         policy.load_report = info  # type: ignore[attr-defined]

@@ -37,32 +37,25 @@ COMPONENTS = 22
 NUM_STATES = 4
 
 
-class DiscreteExpert(VLAFlowMatching):
-    def __init__(
-        self,
-        config: SmolVLAConfig,
-        components: int = COMPONENTS,
-        num_states: int = NUM_STATES,
-    ) -> None:
+class ExpertBase(VLAFlowMatching):
+    """`VLAFlowMatching` without the flow-matching projections, with a generic
+    `encode` that runs prefix + suffix tokens through the VLM and the expert."""
+
+    def __init__(self, config: SmolVLAConfig) -> None:
         super().__init__(config)
-        self.components = components
-        self.num_states = num_states
-        hidden = self.vlm_with_expert.expert_hidden_size
         del self.action_in_proj, self.action_out_proj
         del self.action_time_mlp_in, self.action_time_mlp_out
-        self.queries = nn.Parameter(torch.randn(config.chunk_size, hidden) * 0.02)
-        self.logit_head = nn.Linear(hidden, components * num_states)
 
     def encode(
         self, images, img_masks, lang_tokens, lang_masks, state, suffix_embs, suffix_att
     ) -> Tensor:
         """Run prefix + suffix through the VLM/expert; return the expert output at
-        the last `chunk_size` suffix positions as float32 `(B, k, hidden)`."""
+        the last `suffix_embs.shape[1]` positions as float32 `(B, n, hidden)`."""
         prefix_embs, prefix_pad, prefix_att = self.embed_prefix(
             images, img_masks, lang_tokens, lang_masks, state=state
         )
-        b, k = suffix_embs.shape[:2]
-        suffix_pad = torch.ones(b, k, dtype=torch.bool, device=suffix_embs.device)
+        b, n = suffix_embs.shape[:2]
+        suffix_pad = torch.ones(b, n, dtype=torch.bool, device=suffix_embs.device)
         pad_masks = torch.cat([prefix_pad, suffix_pad], dim=1)
         att_masks = torch.cat([prefix_att, suffix_att.to(prefix_att.dtype)], dim=1)
         att_2d = make_att_2d_masks(pad_masks, att_masks)
@@ -74,7 +67,22 @@ class DiscreteExpert(VLAFlowMatching):
             inputs_embeds=[prefix_embs, suffix_embs],
             use_cache=False,
         )
-        return suffix_out[:, -self.config.chunk_size :].to(torch.float32)
+        return suffix_out[:, -n:].to(torch.float32)
+
+
+class DiscreteExpert(ExpertBase):
+    def __init__(
+        self,
+        config: SmolVLAConfig,
+        components: int = COMPONENTS,
+        num_states: int = NUM_STATES,
+    ) -> None:
+        super().__init__(config)
+        self.components = components
+        self.num_states = num_states
+        hidden = self.vlm_with_expert.expert_hidden_size
+        self.queries = nn.Parameter(torch.randn(config.chunk_size, hidden) * 0.02)
+        self.logit_head = nn.Linear(hidden, components * num_states)
 
     def compute_logits(
         self, images, img_masks, lang_tokens, lang_masks, state
