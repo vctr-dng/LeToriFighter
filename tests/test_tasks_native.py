@@ -1,11 +1,10 @@
 """Task wrapper and evaluation harness on the real game. Run with `pytest -m native`.
 
-The game is launched in a subprocess wrapped in `flock /tmp/toribash-game.lock`
-(one Toribash instance per machine), so do not wrap pytest itself in `flock`.
+The game runs in direct-launch mode on an Xvfb `InstancePool` instance (see the
+`xvfb_instance` fixture), in a subprocess without `DISPLAY`.
 """
 
 import json
-import shutil
 import subprocess
 import sys
 import textwrap
@@ -14,17 +13,17 @@ import pytest
 
 pytestmark = pytest.mark.native
 
-LOCK_FILE = "/tmp/toribash-game.lock"
-
 POSE_SCRIPT = textwrap.dedent(
     """
     import dataclasses
+    import json
+    import os
 
     import numpy as np
 
     from letorifighter.tasks import LeToriTaskEnv
 
-    env = LeToriTaskEnv(split="val")
+    env = LeToriTaskEnv(split="val", env_kwargs=json.loads(os.environ["LETORI_ENV_KWARGS"]))
     base = env.definitions.sample("val", 0, 0)
     base = dataclasses.replace(base, task="reach", task_id=0, horizon_turns=2)
 
@@ -55,6 +54,7 @@ POSE_SCRIPT = textwrap.dedent(
 EVAL_SCRIPT = textwrap.dedent(
     """
     import json
+    import os
     import sys
 
     import numpy as np
@@ -63,7 +63,7 @@ EVAL_SCRIPT = textwrap.dedent(
     from letorifighter.tasks import LeToriTaskEnv
 
     rng = np.random.default_rng(0)
-    env = LeToriTaskEnv(split="val")
+    env = LeToriTaskEnv(split="val", env_kwargs=json.loads(os.environ["LETORI_ENV_KWARGS"]))
     try:
         report = evaluate(
             lambda obs: rng.integers(0, 4, 22),
@@ -81,11 +81,10 @@ EVAL_SCRIPT = textwrap.dedent(
 )
 
 
-def run_game_script(script, *args):
-    if shutil.which("flock") is None:
-        pytest.skip("flock is not available")
+def run_game_script(env, script, *args):
     return subprocess.run(
-        ["flock", LOCK_FILE, sys.executable, "-I", "-c", script, *args],
+        [sys.executable, "-I", "-c", script, *args],
+        env=env,
         check=False,
         capture_output=True,
         text=True,
@@ -93,15 +92,15 @@ def run_game_script(script, *args):
     )
 
 
-def test_preroll_poses_are_deterministic_and_differ():
-    result = run_game_script(POSE_SCRIPT)
+def test_preroll_poses_are_deterministic_and_differ(game_env):
+    result = run_game_script(game_env, POSE_SCRIPT)
     assert result.returncode == 0, result.stderr
     assert "POSES OK" in result.stdout
 
 
-def test_short_evaluation_with_random_policy(tmp_path):
+def test_short_evaluation_with_random_policy(tmp_path, game_env):
     out = tmp_path / "report.json"
-    result = run_game_script(EVAL_SCRIPT, str(out))
+    result = run_game_script(game_env, EVAL_SCRIPT, str(out))
     assert result.returncode == 0, result.stderr
     assert "EVAL OK" in result.stdout
     report = json.loads(out.read_text())

@@ -1,10 +1,9 @@
 """Steps a ToriLLE env from LeToriFighter. Run with `pytest -m native`.
 
-Only one Toribash instance can run on the machine, so the game is launched in a
-subprocess wrapped in `flock /tmp/toribash-game.lock`.
+The game runs in direct-launch mode on an Xvfb `InstancePool` instance (see the
+`xvfb_instance` fixture), in a subprocess without `DISPLAY`; nothing appears on the desktop.
 """
 
-import shutil
 import subprocess
 import sys
 import textwrap
@@ -13,15 +12,19 @@ import pytest
 
 pytestmark = pytest.mark.native
 
-LOCK_FILE = "/tmp/toribash-game.lock"
-
 SCRIPT = textwrap.dedent(
     """
+    import json
+    import os
+
     import gymnasium as gym
+
+    from letorifighter.direct import check_env_kwargs
 
     import torille.envs  # noqa: F401
 
-    env = gym.make("Toribash-DestroyUke-v0", matchframes=100, turnframes=5)
+    kwargs = check_env_kwargs(json.loads(os.environ["LETORI_ENV_KWARGS"]))
+    env = gym.make("Toribash-DestroyUke-v0", matchframes=100, turnframes=5, **kwargs)
     try:
         observation, _ = env.reset()
         assert env.observation_space.contains(observation)
@@ -41,11 +44,10 @@ SCRIPT = textwrap.dedent(
 )
 
 
-def test_letorifighter_steps_torille_env():
-    if shutil.which("flock") is None:
-        pytest.skip("flock is not available")
+def test_letorifighter_steps_torille_env(game_env):
     result = subprocess.run(
-        ["flock", LOCK_FILE, sys.executable, "-I", "-c", SCRIPT],
+        [sys.executable, "-I", "-c", SCRIPT],
+        env=game_env,
         check=False,
         capture_output=True,
         text=True,
