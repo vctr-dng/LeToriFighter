@@ -2,13 +2,16 @@
 
 One run = one `VLAConfig` (YAML file and/or `--flag value` overrides). It trains
 for `steps` optimiser steps with AdamW, linear warmup and cosine decay, bf16
-autocast, gradient clipping; logs to a local MLflow file store
-(sqlite store `<data>/mlruns/mlflow.db`, experiment `m6-vla`; MLflow 3 deprecates the plain file store) and to `<out_dir>/metrics.jsonl`; evaluates
+autocast, gradient clipping; logs to a local MLflow store (sqlite file
+`<data>/mlruns/mlflow.db`, experiment `m6-vla`; MLflow 3 deprecates the plain file
+store) and to `<out_dir>/metrics.jsonl`; evaluates
 offline on held-out episodes every `eval_every` steps (rounded per-component
-accuracy against the recorded actions); writes checkpoints `<out_dir>/last`
-(model + optimizer + scheduler, resumable with `--resume`) and `<out_dir>/final`.
+accuracy against the recorded actions); writes `<out_dir>/last` every `save_every`
+steps (model + optimizer + scheduler; `--resume` continues from it; deleted when the
+run completes) and `<out_dir>/final` (model, config and state statistics, about
+0.9 GB; `adapter.load_policy` reads it).
 With `eval_game_episodes > 0` it also plays the policy in the game through
-`letorifighter.eval.evaluate` (untested outside unit tests: needs Toribash).
+`letorifighter.eval.evaluate` (not tested: it needs Toribash).
 """
 # pyrefly: ignore-errors
 # (torch/lerobot/transformers are optional and loosely typed; checked by the tests)
@@ -19,6 +22,7 @@ import argparse
 import fcntl
 import json
 import math
+import shutil
 import time
 from pathlib import Path
 from typing import Any
@@ -323,18 +327,9 @@ def train(cfg: VLAConfig) -> dict[str, Any]:
                     step,
                 )
         save_checkpoint(
-            last,
-            policy,
-            cfg,
-            train_set.state_dim,
-            train_set.stats,
-            optimizer,
-            scheduler,
-            step,
-        )
-        save_checkpoint(
             out / "final", policy, cfg, train_set.state_dim, train_set.stats, step=step
         )
+        shutil.rmtree(last, ignore_errors=True)  # a finished run needs no resume state
         final_val = next((r for r in reversed(history) if "val/acc" in r), {})
         summary = {
             "run": run_name,
