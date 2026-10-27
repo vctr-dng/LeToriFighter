@@ -68,7 +68,10 @@ def test_two_short_episodes_with_real_rgb(tmp_path):
     assert merged.returncode == 0, merged.stdout[-2000:] + merged.stderr[-2000:]
 
     records = read_jsonl(out / "merged" / "episodes.jsonl")
-    assert len(records) == 2 and all(r["turns"] == TURNS for r in records)
+    assert len(records) == 2
+    turns = [r["turns"] for r in records]
+    # an episode may end before the horizon if the game ends early
+    assert all(2 <= t <= TURNS for t in turns), turns
 
     class Text:
         def __call__(self, text):
@@ -77,12 +80,12 @@ def test_two_short_episodes_with_real_rgb(tmp_path):
     ds = VLADataset(
         out / "merged" / DEMOS, 2, repo_id="local/native-demos", text_encoder=Text()
     )
-    assert len(ds) == 2 * TURNS
+    assert len(ds) == sum(turns)
     frames = torch.stack([ds[i]["observation.images.front"] for i in range(len(ds))])
-    assert frames.shape == (2 * TURNS, 3, SIZE, SIZE)
+    assert frames.shape == (sum(turns), 3, SIZE, SIZE)
     assert frames.std() > 0.02, "frames are constant"
     # the game moves, so consecutive frames of an episode differ
-    assert (frames[1:TURNS] - frames[: TURNS - 1]).abs().mean() > 1e-3
+    assert (frames[1 : turns[0]] - frames[: turns[0] - 1]).abs().mean() > 1e-3
     # the state is the observation, not constant either
     assert np.asarray(ds.states).std(axis=0).max() > 0
     assert build_card(out)["integrity"]["ok"]
