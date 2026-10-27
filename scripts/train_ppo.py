@@ -25,6 +25,8 @@ import argparse
 import fcntl
 import math
 import os
+import signal
+import sys
 import time
 from dataclasses import asdict, dataclass, field, fields, replace
 from pathlib import Path
@@ -112,6 +114,8 @@ def main(argv: list[str] | None = None) -> None:
     if bool(args.game_dir) != bool(args.display):
         raise SystemExit("--game-dir and --display go together")
 
+    # SIGTERM must unwind (finally: close the game and the pool) instead of killing us
+    signal.signal(signal.SIGTERM, lambda *_: sys.exit(143))
     pool = None
     env_kwargs: dict = {}
     if cfg.launch == "steam":

@@ -24,6 +24,7 @@ already in a shard are skipped. Only the train split is collected.
 
 import argparse
 import json
+import signal
 import sys
 from pathlib import Path
 
@@ -64,6 +65,7 @@ def cmd_run(args, config) -> int:
         config.env_kwargs.update(json.loads(args.env_kwargs))
     definitions = Definitions.load(config.definitions)
 
+    signal.signal(signal.SIGTERM, lambda *_: sys.exit(143))  # unwind: close game, pool
     pool = None
     if args.launch == "direct" and "game_dir" not in {
         **config.env_kwargs,

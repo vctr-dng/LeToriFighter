@@ -8,6 +8,7 @@ Steam launch (it starts on the desktop display), a missing display (falls back t
 use on a machine without a desktop concern).
 """
 
+import contextlib
 import os
 
 DESKTOP_DISPLAYS = (":0", ":0.0")
@@ -52,3 +53,12 @@ def check_env_kwargs(kwargs: dict) -> dict:
             "direct launch needs a game_dir (an InstancePool copy)"
         )
     return kwargs
+
+
+@contextlib.contextmanager
+def own_instance():
+    """A private `InstancePool(1)` (game copy and Xvfb); yields guarded env kwargs."""
+    from torille.pool import InstancePool
+
+    with InstancePool(1, display="xvfb") as pool:
+        yield check_env_kwargs(next(iter(pool)))
