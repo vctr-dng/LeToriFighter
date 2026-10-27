@@ -140,6 +140,8 @@ def main(argv: list[str] | None = None) -> None:
 
     mlflow = None
     if cfg.mlflow_uri:
+        # the file store is in maintenance mode in MLflow 3 and needs this opt-in
+        os.environ.setdefault("MLFLOW_ALLOW_FILE_STORE", "true")
         import mlflow
 
         uri = Path(cfg.mlflow_uri)
