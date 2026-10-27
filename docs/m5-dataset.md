@@ -90,7 +90,7 @@ Measured once on the real game on `:0`, Steam launch, capture at 224 px with `dr
 
 Opponents follow the train pools (about 60% advance_grab because keep_distance and escape only use chasers, 20% passive, 20% random), poses are K=0 and K=2 train poses.
 
-Native test (`tests/test_collect_native.py`): **pending**. It ran once and collected real RGB frames, then a later run failed in the script step; the game on `:0` may not be used any more, so it was not investigated or re-run. It is to be run on the Xvfb direct-launch mode once ToriLLE provides it (`worker_env_kwargs` plus `--no-lock`).
+Native test (`tests/test_collect_native.py`): **pending**. A first run collected real RGB frames and failed only on a too-strict turn-count assertion (since relaxed); a later run was interrupted by the orchestrator because the game window appeared on the user's monitor, so the relaxed test has not completed once. It is to be run on the Xvfb direct-launch mode once ToriLLE provides it (`worker_env_kwargs` plus `--no-lock`).
 
 
 ## Search-based demonstrations (CEM, random shooting): not implemented, and why
