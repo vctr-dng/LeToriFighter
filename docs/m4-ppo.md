@@ -27,7 +27,7 @@ Config keys: `name`, `tasks`, `opponents` (null = the train pool of each task), 
 `configs/ppo_smoke.yaml`: Reach vs passive, `draw_game=False`, `turnframes=5`, 3072 turns, rollout 512.
 
 - Training throughput: 16 to 20 turns/s (rollouts including the network forward and update; the update costs about 0.1 s per rollout). Whole run including 3 evaluations (5 + 5 + 10 val episodes of 40 turns): 3072 turns in 206 s, 14.9 turns/s overall.
-- Loop works end to end: rollouts, GAE update, periodic val eval with `letorifighter.eval`, checkpoints, MLflow, resume (rerun with a larger `total_turns` continued from 3072). At 3k turns nothing has been learned, as expected (val success 0.6 of 5 episodes after 1.5k turns, 0.0 of 5, then 0.1 of 10: noise around the random baseline 0.2).
+- Loop works end to end: rollouts, GAE update, periodic val eval with `letorifighter.eval`, checkpoints, MLflow, resume (rerun with a larger `total_turns` continued from 3072; that rerun ran at only 6.5 turns/s while another process was using the machine, so budget for 2x slower than the figures below under contention). At 3k turns nothing has been learned, as expected (val success 0.6 of 5 episodes after 1.5k turns, 0.0 of 5, then 0.1 of 10: noise around the random baseline 0.2).
 
 ## Success thresholds (proposal)
 
